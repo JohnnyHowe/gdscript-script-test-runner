@@ -3,20 +3,20 @@ Can test any plain objects.
 
 # Running Tests
 ```gdscript
-godot --headless -s addons/script-test-runner/run_tests.gd
+godot --headless -s addons/gdscript-script-test-runner/run_tests.gd
 ```
 
 ## Running Specific Tests
 The first two arguments after the above command are file and method filters (regex).
 
 ```gdscript
-godot --headless -s addons/script-test-runner/run_tests.gd -- file_filter=<file_filter>, method_filter=<method_filter>
+godot --headless -s addons/gdscript-script-test-runner/run_tests.gd -- file_filter=<file_filter>, method_filter=<method_filter>
 ```
 
 For example
 
 ```gdscript
-godot --headless -s addons/script-test-runner/run_tests.gd -- file_filter=.*my_enemy_scripts.*, method_filter=test_count_each_item_empty
+godot --headless -s addons/gdscript-script-test-runner/run_tests.gd -- file_filter=.*my_enemy_scripts.*, method_filter=test_count_each_item_empty
 ```
 
 Will run any method matching `test_count_each_item_empty` in any file matching `array_util`.
