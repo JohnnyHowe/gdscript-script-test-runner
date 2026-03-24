@@ -1,17 +1,10 @@
-class_name ScriptTest
-
-var name: String
-var test_function: Callable
-
-var file_path: String
-var file_instance: Object
-var method_name: String
+const _TestDataObjects := preload("../test_data_objects/main.gd")
 
 
-func run_test() -> ScriptTestResult:
-	var raw_result = test_function.call()
+static func run(test: _TestDataObjects.Test) -> ScriptTestResult:
+	var raw_result = test.test_function.call()
 	var compiled_result := _get_valid_test_result(raw_result)
-	compiled_result.test = self
+	compiled_result.test = test
 	return compiled_result
 
 
@@ -34,7 +27,3 @@ static func _get_valid_test_result_from_array(original_test_results: Array) -> S
 		failure_reasons.append(result.message)
 	var prefix = "- "
 	return ScriptTestResult.new(failure_reasons.size() == 0, prefix + ("\n" + prefix).join(failure_reasons))
-
-
-func _to_string() -> String:
-	return "%s<%s from %s.%s>" % [get_script().get_global_name(), file_path, method_name]

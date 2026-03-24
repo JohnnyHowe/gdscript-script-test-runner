@@ -2,24 +2,22 @@
 Can test any plain objects.
 
 # Running Tests
-```gdscript
-godot --headless -s addons/gdscript-script-test-runner/run_tests.gd
+```
+godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd
 ```
 
 ## Running Specific Tests
 The first two arguments after the above command are file and method filters (regex).
 
-```gdscript
-godot --headless -s addons/gdscript-script-test-runner/run_tests.gd -- file_filter=<file_filter>, method_filter=<method_filter>
+```
+godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd -- file_filter=<file_filter>, method_filter=<method_filter>
 ```
 
 For example
 
-```gdscript
-godot --headless -s addons/gdscript-script-test-runner/run_tests.gd -- file_filter=.*my_enemy_scripts.*, method_filter=test_count_each_item_empty
 ```
-
-Will run any method matching `test_count_each_item_empty` in any file matching `array_util`.
+godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd -- file_filter=.*my_enemy_scripts.*, method_filter=test_count_each_item_empty
+```
 
 # Making Tests
 All tests must be in files ending with `.tests.gd`
@@ -53,3 +51,10 @@ func my_method_test_generator() -> Dictionary[String, Callable]:
 		tests["test_my_test_method_with" + item_name] = func(): return my_test_method(i)
 	return tests
 ```
+
+# CLI Parameters
+
+| Name | Type | Description |
+| - | - | - |
+| `file_filter` | `String` | regex pattern for refining test file search.<br><br>for example, `file_filter=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
+| `method_filter` | `String` | regex pattern for filtering test methods. Same usage as `file_filter`.

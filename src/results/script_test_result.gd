@@ -1,14 +1,15 @@
 class_name ScriptTestResult
 
-const no_reason_given := "No reason given"
+const _TestDataObjects := preload("../test_data_objects/main.gd")
+const _NO_REASON_GIVEN := "No reason given"
 
 var passed: bool
 var message: String
-var test: ScriptTest
+var test: _TestDataObjects.Test
 
 
 @warning_ignore("SHADOWED_VARIABLE")
-func _init(passed: bool, failed_message: String = no_reason_given) -> void:
+func _init(passed: bool, failed_message: String = _NO_REASON_GIVEN) -> void:
 	self.passed = passed
 	self.message = failed_message
 	if failed_message.begins_with("\n"):
@@ -33,7 +34,7 @@ func _to_string() -> String:
 # region Extra Constructors
 # =================================================================================================
 
-static func from_equals(expected, actual, failed_message: String = no_reason_given, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
+static func from_equals(expected, actual, failed_message: String = _NO_REASON_GIVEN, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
 	var correct_type := typeof(expected) == typeof(actual)
 
 	if not correct_type:
@@ -44,7 +45,7 @@ static func from_equals(expected, actual, failed_message: String = no_reason_giv
 	return from_equivalent(expected, actual, failed_message, equals_override)	
 
 
-static func from_equivalent(expected, actual, failed_message: String = no_reason_given, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
+static func from_equivalent(expected, actual, failed_message: String = _NO_REASON_GIVEN, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
 	if equals_override.call(expected, actual):
 		return ScriptTestResult.new(true)
 
@@ -57,7 +58,7 @@ static func not_implemented() -> ScriptTestResult:
 	return ScriptTestResult.fail("Test not implemented!")
 
 
-static func fail(fail_message: String = no_reason_given) -> ScriptTestResult:
+static func fail(fail_message: String = _NO_REASON_GIVEN) -> ScriptTestResult:
 	return ScriptTestResult.new(false, fail_message)
 
 
