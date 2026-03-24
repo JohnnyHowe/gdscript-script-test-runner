@@ -36,15 +36,19 @@ func _to_string() -> String:
 static func from_equals(expected, actual, failed_message: String = no_reason_given, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
 	var correct_type := typeof(expected) == typeof(actual)
 
-	if correct_type and equals_override.call(expected, actual):
+	if not correct_type:
+		var comparision = "\n\tExpected %s: %s\n\tGot %s: %s" % [type_string(typeof(expected)), expected, type_string(typeof(actual)), actual]
+		var message = (failed_message + ". " if failed_message != "" else "") + comparision
+		return ScriptTestResult.new(false, message)
+
+	return from_equivalent(expected, actual, failed_message, equals_override)	
+
+
+static func from_equivalent(expected, actual, failed_message: String = no_reason_given, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
+	if equals_override.call(expected, actual):
 		return ScriptTestResult.new(true)
 
-	var comparision := ""
-	if not correct_type:
-		comparision = "\n\tExpected %s: %s\n\tGot %s: %s" % [type_string(typeof(expected)), expected, type_string(typeof(actual)), actual]
-	else:
-		comparision = "\n\tExpected: %s\n\tGot:      %s" % [expected, actual]
-
+	var comparision = "\n\tExpected: %s\n\tGot:      %s" % [expected, actual]
 	var final_message = (failed_message + ". " if failed_message != "" else "") + comparision
 	return ScriptTestResult.new(false, final_message)
 
