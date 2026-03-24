@@ -36,19 +36,15 @@ func _to_string() -> String:
 static func from_equals(expected, actual, failed_message: String = no_reason_given, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
 	var correct_type := typeof(expected) == typeof(actual)
 
-	if not correct_type:
-		var comparision = "\n\tExpected %s: %s\n\tGot %s: %s" % [type_string(typeof(expected)), expected, type_string(typeof(actual)), actual]
-		var message = (failed_message + ". " if failed_message != "" else "") + comparision
-		return ScriptTestResult.new(false, message)
-
-	return from_equivalent(expected, actual, failed_message, equals_override)	
-
-
-static func from_equivalent(expected, actual, failed_message: String = no_reason_given, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
-	if equals_override.call(expected, actual):
+	if correct_type and equals_override.call(expected, actual):
 		return ScriptTestResult.new(true)
 
-	var comparision = "\n\tExpected: %s\n\tGot:      %s" % [expected, actual]
+	var comparision := ""
+	if not correct_type:
+		comparision = "\n\tExpected %s: %s\n\tGot %s: %s" % [type_string(typeof(expected)), expected, type_string(typeof(actual)), actual]
+	else:
+		comparision = "\n\tExpected: %s\n\tGot:      %s" % [expected, actual]
+
 	var final_message = (failed_message + ". " if failed_message != "" else "") + comparision
 	return ScriptTestResult.new(false, final_message)
 
@@ -70,9 +66,9 @@ static func contains_same_items(expected: Array, real: Array, equals_override :=
 
 	test_results.append(ScriptTestResult.new(expected.size() == real.size(), "Expected array of size %s, got %s" % [expected.size(), real.size()]))
 
-	for expected_item in ArrayUtility.difference(expected, real, equals_override):
+	for expected_item in ArraySetOperations.difference(expected, real, equals_override):
 		test_results.append(ScriptTestResult.fail("Expected to find %s" % _get_item_str(expected_item)))
-	for real_item in ArrayUtility.difference(real, expected, equals_override):
+	for real_item in ArraySetOperations.difference(real, expected, equals_override):
 		test_results.append(ScriptTestResult.fail("Didn't expect to find %s" % _get_item_str(real_item)))
 
 	return test_results
