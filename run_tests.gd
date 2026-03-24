@@ -1,10 +1,16 @@
 extends SceneTree
 
+const _Logger := preload("./src/logger.gd")
+
 
 func _initialize():
-	var runner := ScriptTestRunner.new("res://")
-
 	var args := UserArgumentParser.parse_cmdline_user_args()
+
+	var logger := _Logger.new()
+	if args.has("output"):
+		logger.log_to_file(args["output"])
+
+	var runner := ScriptTestRunner.new("res://", logger)
 	runner.filter = ScriptTestFilter.new(args.get("file_filter", ".*"), args.get("method_filter", ".*"))
 	runner.assert_on_fail = args.get("assert_on_fail", false)
 	runner.show_passed_tests = args.get("show_passed_tests", false)

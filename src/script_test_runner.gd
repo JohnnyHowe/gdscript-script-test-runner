@@ -1,5 +1,7 @@
 class_name ScriptTestRunner
 
+const _Logger := preload("./logger.gd")
+
 const TEST_FILE_NAME_POSTFIX := ".tests.gd"
 const TEST_FUNCTION_NAME_PREFIX := "test_"
 
@@ -14,7 +16,11 @@ var test_files: Array[GDScript]
 var _all_test_results: Dictionary[GDScript, Array]
 
 
-func _init(root_search_path: String) -> void:
+var _logger: _Logger
+
+
+func _init(root_search_path: String, logger) -> void:
+	_logger = logger
 	_root_path = root_search_path
 
 
@@ -22,14 +28,14 @@ func run():
 	_load_test_files()
 
 	var line_separator := "\n  - "
-	print(line_separator.join([
+	_logger.log(line_separator.join([
 		"Found %s test files:" % test_files.size(),
 		"Test files must end with \"%s\"" % [TEST_FILE_NAME_POSTFIX],
 		filter.to_string_with_separator(line_separator)
 	]))
 
 	_run_loaded_test_files()
-	_print_results()
+	_log_results()
 
 
 func _load_test_files():
@@ -40,7 +46,7 @@ func _load_test_files():
 		push_warning("Found zero files ending with %s" % TEST_FILE_NAME_POSTFIX)
 	elif show_unfiltered_test_files:
 		var test_file_paths = found_test_files.values().map(func(resource: Resource): return resource.resource_path.trim_prefix("res://"))
-		print("\n  - ".join(["Found %s test files (without filter):" % found_test_files.size()] + test_file_paths))
+		_logger.log("\n  - ".join(["Found %s test files (without filter):" % found_test_files.size()] + test_file_paths))
 
 	for test_file in found_test_files.values():
 		if not filter.ignore_file(test_file.resource_path):
@@ -58,9 +64,9 @@ func _run_loaded_test_files():
 		_all_test_results[test_file] = results
 
 
-func _print_results():
-	print("=".repeat(80))
-	print("Test Results Start")
+func _log_results():
+	_logger.log("=".repeat(80))
+	_logger.log("Test Results Start")
 	for test_file in test_files:
 		var results = _all_test_results[test_file]
 		if not show_passed_tests:
@@ -69,16 +75,16 @@ func _print_results():
 		if results.size() == 0:
 			continue
 
-		_print_file_results(test_file, results)
+		log_file_results(test_file, results)
 
-	print()
-	print()
-	print_summary()
-	print("Test Results End")
-	print("=".repeat(80))
+	_logger.log()
+	_logger.log()
+	log_summary()
+	_logger.log("Test Results End")
+	_logger.log("=".repeat(80))
 
 
-func _print_file_results(test_file: GDScript, results: Array[ScriptTestResult]):
+func log_file_results(test_file: GDScript, results: Array[ScriptTestResult]):
 	var results_to_show: Array[ScriptTestResult] = results
 	if not show_passed_tests:
 		results_to_show = results_to_show.filter(func(result: ScriptTestResult): return not result.passed)
@@ -86,9 +92,9 @@ func _print_file_results(test_file: GDScript, results: Array[ScriptTestResult]):
 	if results_to_show.size() == 0:
 		return
 
-	print(test_file.resource_path.trim_prefix("res://"))
+	_logger.log(test_file.resource_path.trim_prefix("res://"))
 	for result in results_to_show:
-		print(result.get_display_string().replace("\n", "\n    "))
+		_logger.log(result.get_display_string().replace("\n", "\n    "))
 
 
 func run_test_file(test_file: GDScript) -> Array[ScriptTestResult]:
@@ -142,7 +148,7 @@ func _get_tests_from_method(file_instance, file_path, method_dict: Dictionary) -
 	return []
 
 
-func print_summary():
+func log_summary():
 	var failed_tests_count = 0
 
 	var tests_run = 0
@@ -153,9 +159,9 @@ func print_summary():
 				failed_tests_count += 1
 
 	if failed_tests_count > 0:
-		print("Failed %s/%s tests" % [failed_tests_count, tests_run])
+		_logger.log("Failed %s/%s tests" % [failed_tests_count, tests_run])
 	else:
-		print("Passed all tests (%s tests in %s files)" % [tests_run, test_files.size()])
+		_logger.log("Passed all tests (%s tests in %s files)" % [tests_run, test_files.size()])
 
 
 func get_failed_test_count() -> int:
