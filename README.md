@@ -54,7 +54,9 @@ func my_method_test_generator() -> Dictionary[String, Callable]:
 
 # CLI Parameters
 
-| Name | Type | Description |
-| - | - | - |
-| `file_filter` | `String` | regex pattern for refining test file search.<br><br>for example, `file_filter=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
-| `method_filter` | `String` | regex pattern for filtering test methods. Same usage as `file_filter`.
+| Name | Type | Default | Description |
+| - | - | - | - |
+| `print_output` | `bool` | `true` | Print the output to console? |
+| `file_output` | `String` | NA | File to write the output log to. Does not write if no path given. |
+| `file_filter` | `String` | `.*` | regex pattern for refining test file search.<br><br>for example, `file_filter=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
+| `method_filter` | `String` | `.*` | regex pattern for filtering test methods. Same usage as `file_filter`.

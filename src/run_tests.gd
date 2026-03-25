@@ -12,7 +12,8 @@ func _initialize():
 
 
 func _run():
-	var configuration := _create_configuration()
+	var args := UserArgumentParser.parse_cmdline_user_args()
+	var configuration := _create_configuration(args)
 
 	var test_scripts := _Loader.TestScriptsLoader.new(configuration).load()
 
@@ -20,14 +21,20 @@ func _run():
 	var results := runner.run(configuration, test_scripts)
 
 	var log_creator := _Logging.Log.new(results)
-	print(log_creator.as_string())
+
+	var log := log_creator.as_string(args.get("hide_passed", false))
+
+	if args.get("print_output", true):
+		print(log)
+
+	if args.has("file_output"):
+		_Logging.WriteToFile.write(args["file_output"], log)	
 
 	var exit_code := 0 if results.passed else 1
 	_quit(exit_code)
 
 
-func _create_configuration() -> _Configuration:
-	var args := UserArgumentParser.parse_cmdline_user_args()
+func _create_configuration(args: Dictionary) -> _Configuration:
 
 	var ignored_patterns: Array[String] = [
 		_TestFilter.get_path_ignore_pattern("res://.godot")
