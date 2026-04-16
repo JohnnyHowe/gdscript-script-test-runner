@@ -71,9 +71,9 @@ static func contains_same_items(expected: Array, real: Array, equals_override :=
 
 	test_results.append(ScriptTestResult.new(expected.size() == real.size(), "Expected array of size %s, got %s" % [expected.size(), real.size()]))
 
-	for expected_item in ArraySetOperations.difference(expected, real, equals_override):
+	for expected_item in ArrayUtility.ArraySetOperations.difference(expected, real, equals_override):
 		test_results.append(ScriptTestResult.fail("Expected to find %s" % _get_item_str(expected_item)))
-	for real_item in ArraySetOperations.difference(real, expected, equals_override):
+	for real_item in ArrayUtility.ArraySetOperations.difference(real, expected, equals_override):
 		test_results.append(ScriptTestResult.fail("Didn't expect to find %s" % _get_item_str(real_item)))
 
 	return test_results
