@@ -12,12 +12,27 @@ The first two arguments after the above command are file and method filters (reg
 ```
 godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd -- file_filter=<file_filter>, method_filter=<method_filter>
 ```
+## CLI Parameters (Godot)
 
-For example
+| Name | Type | Default | Description |
+| - | - | - | - |
+| `print_output` | `bool` | `true` | Print the output to console? |
+| `file_output` | `String` | NA | File to write the output log to. Does not write if no path given. |
+| `file_filter` | `String` | `.*` | regex pattern for refining test file search.<br><br>for example, `file_filter=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
+| `method_filter` | `String` | `.*` | regex pattern for filtering test methods. Same usage as `file_filter`.
 
-```
-godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd -- file_filter=.*my_enemy_scripts.*, method_filter=test_count_each_item_empty
-```
+## CLI Parameters (Python)
+
+**NOTE: The python wrapper requires `godot` to be on your PATH.**
+
+| Name | Type | Default | Description |
+| - | - | - | - |
+| `--project-root` | `String` | CWD | Path to the Godot project root.
+| `--file-filter` | `String` | `.*` | Regex for test file paths.
+| `--method-filter` | `String` | `.*` | Regex for test method names.
+| `--hide-passed` | `bool` | `false` | Hide passed tests in the output.
+| `--print-output` | `bool` | `true` | Print the test log to stdout.
+| `--file-output` | `String` | NA | Write the log to a file.
 
 # Making Tests
 All tests must be in files ending with `.tests.gd`
@@ -51,12 +66,3 @@ func my_method_test_generator() -> Dictionary[String, Callable]:
 		tests["test_my_test_method_with" + item_name] = func(): return my_test_method(i)
 	return tests
 ```
-
-# CLI Parameters
-
-| Name | Type | Default | Description |
-| - | - | - | - |
-| `print_output` | `bool` | `true` | Print the output to console? |
-| `file_output` | `String` | NA | File to write the output log to. Does not write if no path given. |
-| `file_filter` | `String` | `.*` | regex pattern for refining test file search.<br><br>for example, `file_filter=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
-| `method_filter` | `String` | `.*` | regex pattern for filtering test methods. Same usage as `file_filter`.
