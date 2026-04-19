@@ -49,7 +49,8 @@ func _create_configuration(args: Dictionary) -> _Configuration:
 		filter,
 		".tests.gd",
 		"test_",
-		"_test_generator"
+		"_test_generator",
+		args.get("stop_on_first_failed_test", false)
 	)
 
 

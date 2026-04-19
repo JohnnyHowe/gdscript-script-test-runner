@@ -15,11 +15,15 @@ var filter: _TestFilter:
 var search_root: String:
 	get: return _search_root
 
+var stop_on_first_failed_test: bool:
+	get: return _stop_on_first_failed_test
+
 var _test_file_name_postfix: String
 var _test_function_name_prefix: String
 var _test_generator_name_postfix: String
 var _filter: _TestFilter
 var _search_root: String
+var _stop_on_first_failed_test: bool
 
 
 func _init(
@@ -27,7 +31,8 @@ func _init(
 	filter_value: _TestFilter = null,
 	test_file_name_postfix_value := ".tests.gd",
 	test_function_name_prefix_value := "test_",
-	test_generator_name_postfix_value := "_test_generator"
+	test_generator_name_postfix_value := "_test_generator",
+	stop_on_first_failed_test_value := false
 ) -> void:
 	_test_file_name_postfix = test_file_name_postfix_value
 	_test_function_name_prefix = test_function_name_prefix_value
@@ -36,3 +41,4 @@ func _init(
 	if _filter == null:
 		_filter = _TestFilter.new()
 	_search_root = search_root_value
+	_stop_on_first_failed_test = stop_on_first_failed_test_value

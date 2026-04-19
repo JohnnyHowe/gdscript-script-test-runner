@@ -20,6 +20,7 @@ godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd -- file_
 | `file_output` | `String` | NA | File to write the output log to. Does not write if no path given. |
 | `file_filter` | `String` | `.*` | regex pattern for refining test file search.<br><br>for example, `file_filter=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
 | `method_filter` | `String` | `.*` | regex pattern for filtering test methods. Same usage as `file_filter`.
+| `stop_on_first_failed_test` | `bool` | `false` | Stop execution as soon as the first failed test is encountered. |
 
 ## CLI Parameters (Python)
 
@@ -33,6 +34,7 @@ godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd -- file_
 | `--hide-passed` | `bool` | `false` | Hide passed tests in the output.
 | `--print-output` | `bool` | `true` | Print the test log to stdout.
 | `--file-output` | `String` | NA | Write the log to a file.
+| `--stop-on-first-failed-test` | `bool` | `false` | Stop execution as soon as the first failed test is encountered.
 
 # Making Tests
 All tests must be in files ending with `.tests.gd`
