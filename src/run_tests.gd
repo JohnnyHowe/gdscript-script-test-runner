@@ -28,15 +28,18 @@ func _run():
 	var runner := TestSuiteRunner.new()
 	var results := runner.run(test_suite)
 
-	var log_creator := Logging.Log.new(results)
+	# var log_creator := Logging.Log.new(results)
 	
-	var log := log_creator.as_string(hide_passed_tests)
+	# var log := log_creator.as_string(hide_passed_tests)
+
+	var results_dictionary := results.to_dictionary()
+	var results_json := JSON.stringify(results_dictionary, "\t")
 
 	if not hide_results:
-		print(log)
+		print(results_json)
 
 	if not results_file.is_empty():
-		Logging.WriteToFile.write(results_file, log)
+		Logging.WriteToFile.write(results_file, results_json)
 
 	var exit_code := 0 if results.passed else 1
 	_quit(exit_code)
