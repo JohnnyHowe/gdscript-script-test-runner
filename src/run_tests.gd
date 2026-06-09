@@ -22,13 +22,13 @@ func _run():
 
 	var log_creator := _Logging.Log.new(results)
 
-	var log := log_creator.as_string(args.get("hide_passed", false))
+	var log := log_creator.as_string(args.get("hide_passed_tests", false))
 
-	if args.get("print_output", true):
+	if args.get("print_results", true):
 		print(log)
 
-	if args.has("file_output"):
-		_Logging.WriteToFile.write(args["file_output"], log)	
+	if args.has("results_file"):
+		_Logging.WriteToFile.write(args["results_file"], log)	
 
 	var exit_code := 0 if results.passed else 1
 	_quit(exit_code)
@@ -40,8 +40,8 @@ func _create_configuration(args: Dictionary) -> _Configuration:
 		_TestFilter.get_path_ignore_pattern("res://.godot")
 	]
 	var filter := _TestFilter.new(
-		args.get("file_filter", ".*"),
-		args.get("method_filter", ".*"),
+		args.get("test_file_pattern", ".*"),
+		args.get("test_name_pattern", ".*"),
 		ignored_patterns
 	)
 	return _Configuration.new(
@@ -50,7 +50,7 @@ func _create_configuration(args: Dictionary) -> _Configuration:
 		".tests.gd",
 		"test_",
 		"_test_generator",
-		args.get("stop_on_first_failed_test", false)
+		args.get("fail_fast", false)
 	)
 
 

@@ -10,15 +10,27 @@ def parse_args():
 		default=str(Path.cwd()),
 		help="Path to the Godot project root (defaults to current working directory).",
 	)
-	parser.add_argument("--file-filter", default=".*", help="Regex for test file paths.")
-	parser.add_argument("--method-filter", default=".*", help="Regex for test method names.")
+	parser.add_argument("--test-file-pattern", default=".*", help="Regex for test file paths.")
+	parser.add_argument("--test-name-pattern", default=".*", help="Regex for test method names.")
 	parser.add_argument(
-		"--hide-passed",
+		"--hide-passed-tests",
 		default=False,
 		action="store_true",
 		help="Hide passed tests in the output.",
 	)
-	parser.add_argument("--file-output", default=None, help="Write the log to a file.")
+	parser.add_argument(
+		"--print-results",
+		default=True,
+		action=argparse.BooleanOptionalAction,
+		help="Print the test log to stdout.",
+	)
+	parser.add_argument("--results-file", default=None, help="Write the log to a file.")
+	parser.add_argument(
+		"--fail-fast",
+		default=False,
+		action="store_true",
+		help="Stop execution as soon as the first failed test is encountered.",
+	)
 	return parser.parse_args()
 
 
@@ -34,26 +46,31 @@ def _quote_if_needed(value: str) -> str:
 
 
 def run_tests():
-	this_folder_path = Path(__file__).parent
-
 	args = parse_args()
-	project_root = Path(args.project_root)
+	project_root = Path(args.project_root).resolve()
+	script_path = (Path(__file__).parent / "run_tests.gd").resolve()
+	try:
+		godot_script_path = script_path.relative_to(project_root)
+	except ValueError:
+		godot_script_path = script_path
 
 	run_tests_command = [
 		"godot",
 		"--path", str(project_root),
 		"--headless",
 		"--quit",
-		"-s", str(this_folder_path / "run_tests.gd"),
+		"-s", str(godot_script_path),
 	]
 
 	user_args = [
-		f"file_filter={_quote_if_needed(args.file_filter)}",
-		f"method_filter={_quote_if_needed(args.method_filter)}",
-		f"hide_passed={_format_bool(args.hide_passed)}",
+		f"test_file_pattern={_quote_if_needed(args.test_file_pattern)}",
+		f"test_name_pattern={_quote_if_needed(args.test_name_pattern)}",
+		f"hide_passed_tests={_format_bool(args.hide_passed_tests)}",
+		f"print_results={_format_bool(args.print_results)}",
+		f"fail_fast={_format_bool(args.fail_fast)}",
 	]
-	if args.file_output is not None:
-		user_args.append(f"file_output={_quote_if_needed(args.file_output)}")
+	if args.results_file is not None:
+		user_args.append(f"results_file={_quote_if_needed(args.results_file)}")
 
 	full_command = run_tests_command + ["--"] + user_args
 	result = subprocess.run(full_command)
