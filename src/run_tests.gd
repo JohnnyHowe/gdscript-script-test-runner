@@ -6,6 +6,7 @@ const CliHelpers := preload("./cli_helpers/cli_helpers.gd")
 const TestFilter := preload("./test_filter.gd")
 const TestSuiteRunner := preload("./runner/test_suite_runner.gd")
 const TestSuite := preload("./data/tests/test_suite.gd")
+const ResultMarkdownGenerator := preload("./result_parsing/result_markdown_generator.gd")
 
 
 func _initialize():
@@ -18,6 +19,7 @@ func _run():
 	var hide_passed_tests: bool = args.get("hide_passed_tests", true)
 	var hide_results: bool = args.get("hide_results", false)
 	var results_file: StringName = args.get("results_file", "")
+	var results_file_md: StringName = args.get("results_file_md", "")
 
 	var test_suite := _get_test_suite_from_cli_args(args)
 
@@ -35,11 +37,16 @@ func _run():
 	var results_dictionary := results.to_dictionary()
 	var results_json := JSON.stringify(results_dictionary, "\t")
 
-	if not hide_results:
-		print(results_json)
+	# if not hide_results:
+	# 	print(results_json)
 
 	if not results_file.is_empty():
 		CliHelpers.WriteToFile.write(results_file, results_json)
+
+	if not results_file_md.is_empty():
+		print(results_file_md)
+		var results_markdown: String = ResultMarkdownGenerator.new(results).as_string()
+		CliHelpers.WriteToFile.write(results_file_md, results_markdown)
 
 	var exit_code := 0 if results.passed else 1
 	_quit(exit_code)
