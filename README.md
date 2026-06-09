@@ -19,7 +19,7 @@ godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd
 | `test_file_pattern` | `String` | `.*` | Regex pattern for refining test file search.<br><br>For example, `test_file_pattern=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
 | `test_name_pattern` | `String` | `.*` | Regex pattern for filtering test methods. Same usage as `test_file_pattern`.
 | `hide_passed_tests` | `bool` | `false` | Hide passed tests in the output.
-| `print_results` | `bool` | `true` | Print the test log to stdout.
+| `hide_results` | `bool` | `false` | Do not print the test log to stdout.
 | `results_file` | `String` | NA | File to write the output log to. Does not write if no path given.
 | `fail_fast` | `bool` | `false` | Stop execution as soon as the first failed test is encountered.
 
@@ -33,7 +33,7 @@ godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd
 | `--test-file-pattern` | `String` | `.*` | Regex for test file paths.
 | `--test-name-pattern` | `String` | `.*` | Regex for test method names.
 | `--hide-passed-tests` | `bool` | `false` | Hide passed tests in the output.
-| `--print-results`, `--no-print-results` | `bool` | `true` | Print the test log to stdout.
+| `--hide-results` | `bool` | `false` | Do not print the test log to stdout.
 | `--results-file` | `String` | NA | Write the log to a file.
 | `--fail-fast` | `bool` | `false` | Stop execution as soon as the first failed test is encountered.
 

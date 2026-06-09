@@ -19,10 +19,10 @@ def parse_args():
 		help="Hide passed tests in the output.",
 	)
 	parser.add_argument(
-		"--print-results",
-		default=True,
-		action=argparse.BooleanOptionalAction,
-		help="Print the test log to stdout.",
+		"--hide-results",
+		default=False,
+		action="store_true",
+		help="Do not print the test log to stdout.",
 	)
 	parser.add_argument("--results-file", default=None, help="Write the log to a file.")
 	parser.add_argument(
@@ -66,7 +66,7 @@ def run_tests():
 		f"test_file_pattern={_quote_if_needed(args.test_file_pattern)}",
 		f"test_name_pattern={_quote_if_needed(args.test_name_pattern)}",
 		f"hide_passed_tests={_format_bool(args.hide_passed_tests)}",
-		f"print_results={_format_bool(args.print_results)}",
+		f"hide_results={_format_bool(args.hide_results)}",
 		f"fail_fast={_format_bool(args.fail_fast)}",
 	]
 	if args.results_file is not None:

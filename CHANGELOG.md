@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Unreleased
 
 ### Changed
-- Renamed CLI args to `test_file_pattern`, `test_name_pattern`, `hide_passed_tests`, `print_results`, `results_file`, and `fail_fast`.
+- Renamed CLI args to `test_file_pattern`, `test_name_pattern`, `hide_passed_tests`, `hide_results`, `results_file`, and `fail_fast`.
 
 ## [1.2.0]
 

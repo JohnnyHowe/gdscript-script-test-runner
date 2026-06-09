@@ -24,7 +24,7 @@ func _run():
 
 	var log := log_creator.as_string(args.get("hide_passed_tests", false))
 
-	if args.get("print_results", true):
+	if not args.get("hide_results", false):
 		print(log)
 
 	if args.has("results_file"):
