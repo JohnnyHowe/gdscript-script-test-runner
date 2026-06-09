@@ -1,6 +1,5 @@
 extends SceneTree
 
-const _Configuration := preload("./configuration.gd")
 const _SearchCriteria := preload("./discovery/search_criteria.gd")
 const _TestDiscovery := preload("./discovery/test_discovery.gd")
 const _Logging := preload("./logging/main.gd")
@@ -14,12 +13,11 @@ func _initialize():
 
 func _run():
 	var args := UserArgumentParser.parse_cmdline_user_args()
-	var configuration := _create_configuration(args)
 
 	var test_suite := _TestDiscovery.new(_SearchCriteria.from_cli_args(args)).discover()
 
 	var runner := _TestSuiteRunner.new()
-	var results := runner.run(configuration, test_suite)
+	var results := runner.run(test_suite)
 
 	var log_creator := _Logging.Log.new(results)
 	
@@ -33,26 +31,6 @@ func _run():
 
 	var exit_code := 0 if results.passed else 1
 	_quit(exit_code)
-
-
-func _create_configuration(args: Dictionary) -> _Configuration:
-
-	var ignored_patterns: Array[String] = [
-		_TestFilter.get_path_ignore_pattern("res://.godot")
-	]
-	var filter := _TestFilter.new(
-		args.get("test_file_pattern", ".*"),
-		args.get("test_name_pattern", ".*"),
-		ignored_patterns
-	)
-	return _Configuration.new(
-		"res://",
-		filter,
-		".tests.gd",
-		"test_",
-		"_test_generator",
-		args.get("fail_fast", false)
-	)
 
 
 func _quit(exit_code: int):

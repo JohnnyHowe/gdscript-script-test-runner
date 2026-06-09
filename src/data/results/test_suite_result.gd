@@ -1,9 +1,5 @@
-const _Configuration := preload("../../configuration.gd")
 const TestFileResult := preload("./test_file_result.gd")
 
-
-var configuration: _Configuration:
-	get: return _configuration
 
 var all_results: Array[TestFileResult]:
 	get: return _all_results
@@ -26,7 +22,6 @@ var passed_results_count: int:
 var passed: bool:
 	get: return _failed_results_count == 0
 
-var _configuration: _Configuration
 var _all_results: Array[TestFileResult]
 var _failed_results: Array[TestFileResult]
 var _passed_results: Array[TestFileResult]
@@ -35,11 +30,7 @@ var _failed_results_count: int
 var _passed_results_count: int
 
 
-func _init(
-	configuration_value: _Configuration,
-	results_value: Array[TestFileResult],
-) -> void:
-	_configuration = configuration_value
+func _init(results_value: Array[TestFileResult]) -> void:
 	_all_results = results_value
 	_populate_passed_and_failed_results()
 	_populate_result_counts()
