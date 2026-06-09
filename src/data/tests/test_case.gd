@@ -13,7 +13,12 @@ static func from_dictionary(dictionary: Dictionary):
 
 func to_dictionary() -> Dictionary:
 	return {
+		"id": get_id(),
 		"file_path": String(file_path),
 		"method_name": String(method_name),
 		"line_number": line_number
 	}
+
+
+func get_id() -> StringName:
+	return "%s::%s" % [file_path, method_name]

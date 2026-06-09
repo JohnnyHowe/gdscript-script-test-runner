@@ -36,6 +36,12 @@ func _init(results_value: Array[TestFileResult]) -> void:
 	_populate_result_counts()
 
 
+func to_dictionary() -> Dictionary:
+	return {
+		"files": all_results.map(func(result: TestFileResult): return result.to_dictionary()),
+	}
+
+
 func _populate_passed_and_failed_results() -> void:
 	var new_failed_results: Array[TestFileResult] = []
 	var new_passed_results: Array[TestFileResult] = []

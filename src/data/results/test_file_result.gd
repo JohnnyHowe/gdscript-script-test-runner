@@ -4,7 +4,7 @@ const TestCaseResult := preload("./test_case_result.gd")
 var source_file: GDScript:
 	get: return _source_file
 
-var all_results: Array[TestCaseResult]: 
+var all_results: Array[TestCaseResult]:
 	get: return _all_results
 
 var failed_results: Array[TestCaseResult]:
@@ -26,6 +26,13 @@ func _init(source_file_value: GDScript, results: Array[TestCaseResult]) -> void:
 	_source_file = source_file_value
 	_all_results = results
 	_populate_passed_and_failed_results()
+
+
+func to_dictionary() -> Dictionary:
+	return {
+		"source_file": source_file.resource_path,
+		"cases": all_results.map(func(result: TestCaseResult): return result.to_dictionary()),
+	}
 
 
 func _populate_passed_and_failed_results() -> void:

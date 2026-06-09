@@ -30,6 +30,16 @@ func get_display_string() -> String:
 func _to_string() -> String:
 	return "Test Result: %s, %s" % [passed, message]
 
+
+func to_dictionary() -> Dictionary:
+	var d := {
+		"id": test_case.get_id(),
+		"status": "passed" if passed else "failed",
+	}
+	if not passed:
+		d["message"] = message
+	return d
+
 # =================================================================================================
 # region Extra Constructors
 # =================================================================================================
