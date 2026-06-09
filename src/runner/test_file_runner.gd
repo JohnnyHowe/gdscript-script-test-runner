@@ -6,7 +6,7 @@ const _Configuration := preload("../configuration.gd")
 
 static func run(configuration: _Configuration, test_script: _TestDataObjects.TestScript) -> Array[ScriptTestResult]:
 	var results: Array[ScriptTestResult] = []
-	for test in test_script.tests:
+	for test: _TestDataObjects.Test in test_script.tests:
 		var result := _TestCaseRunner.run(test)
 		results.append(result)
 		if configuration.stop_on_first_failed_test and not result.passed:
