@@ -2,9 +2,7 @@ extends SceneTree
 
 const _Configuration := preload("./configuration.gd")
 const _TestDiscovery := preload("./discovery/test_discovery.gd")
-const _Logging := preload("./logging/main.gd")
 const _TestFilter := preload("./test_filter.gd")
-const _TestScriptsRunner := preload("./runner/test_scripts_runner.gd")
 
 
 func _initialize():
@@ -14,28 +12,20 @@ func _initialize():
 func _run():
 	var args := UserArgumentParser.parse_cmdline_user_args()
 	var configuration := _create_configuration(args)
-
-	var test_scripts := _TestDiscovery.new(configuration).discover_test_scripts()
-
-	var runner := _TestScriptsRunner.new()
-	var results := runner.run(configuration, test_scripts)
-
-	var log_creator := _Logging.Log.new(results)
-	
-	var log := log_creator.as_string(args.get("hide_passed_tests", false))
-
-	if not args.get("hide_results", false):
-		print(log)
+	var discovery := _TestDiscovery.new(configuration)
+	var test_scripts := discovery.discover()
+	var json := _TestDiscovery.DiscoveryJsonWriter.to_json(test_scripts)
 
 	if args.has("results_file"):
-		_Logging.WriteToFile.write(args["results_file"], log)	
+		_TestDiscovery.DiscoveryJsonWriter.write(args["results_file"], test_scripts)
 
-	var exit_code := 0 if results.passed else 1
-	_quit(exit_code)
+	if not args.get("hide_results", false):
+		print(json)
+
+	_quit(0)
 
 
 func _create_configuration(args: Dictionary) -> _Configuration:
-
 	var ignored_patterns: Array[String] = [
 		_TestFilter.get_path_ignore_pattern("res://.godot")
 	]
@@ -50,7 +40,7 @@ func _create_configuration(args: Dictionary) -> _Configuration:
 		".tests.gd",
 		"test_",
 		"_test_generator",
-		args.get("fail_fast", false)
+		false
 	)
 
 
