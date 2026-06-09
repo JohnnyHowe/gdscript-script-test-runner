@@ -1,0 +1,38 @@
+{
+	"name": "gdscript-script-test-runner-vscode",
+	"displayName": "GDScript Script Test Runner",
+	"description": "VS Code integration for the GDScript Script Test Runner addon.",
+	"version": "0.0.1",
+	"publisher": "local",
+	"engines": {
+		"vscode": "^1.90.0"
+	},
+	"categories": [
+		"Testing"
+	],
+	"activationEvents": [
+		"onLanguage:gdscript",
+		"onCommand:gdscriptScriptTestRunner.hello"
+	],
+	"main": "./out/extension.js",
+	"contributes": {
+		"commands": [
+			{
+				"command": "gdscriptScriptTestRunner.hello",
+				"title": "GDScript Test Runner: Hello"
+			}
+		]
+	},
+	"scripts": {
+		"compile": "tsc -p ./",
+		"watch": "tsc -watch -p ./",
+		"package": "vsce package --out gdscript-script-test-runner-vscode.vsix",
+		"install:local": "npm run compile && npm run package && code --install-extension gdscript-script-test-runner-vscode.vsix --force"
+	},
+	"devDependencies": {
+		"@vscode/vsce": "^3.0.0",
+		"@types/node": "^20.0.0",
+		"@types/vscode": "^1.90.0",
+		"typescript": "^5.0.0"
+	}
+}

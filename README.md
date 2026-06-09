@@ -12,6 +12,16 @@ or with Godot directly
 godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd
 ```
 
+# VS Code Extension
+This addon includes a local VS Code extension scaffold in `vscode-extension/`.
+
+From the root of the project that contains this addon, run:
+```
+.\godot\addons\gdscript-script-test-runner\install_vscode_extension.bat
+```
+
+Then reload VS Code with `Developer: Reload Window`.
+
 # CLI Parameters (Godot)
 
 | Name | Type | Default | Description |
