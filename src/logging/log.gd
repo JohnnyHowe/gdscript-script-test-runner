@@ -1,12 +1,12 @@
-const _TestSuiteResult := preload("../data/results/test_suite_result.gd")
-const _TestFileResult := preload("../data/results/test_file_result.gd")
+const TestSuiteResult := preload("../data/results/test_suite_result.gd")
+const TestFileResult := preload("../data/results/test_file_result.gd")
 const _SECTION_SEPARATOR := "================================================================"
 
-var _results: _TestSuiteResult
+var _results: TestSuiteResult
 var _lines: Array[String]
 
 
-func _init(results: _TestSuiteResult) -> void:
+func _init(results: TestSuiteResult) -> void:
 	_results = results
 
 
@@ -51,7 +51,7 @@ func _append_section_header(title: String) -> void:
 	_lines.append(_SECTION_SEPARATOR)
 
 
-func _append_test_file_result(file_result: _TestFileResult, hide_passed: bool) -> void:
+func _append_test_file_result(file_result: TestFileResult, hide_passed: bool) -> void:
 	for result in file_result.all_results:
 		if hide_passed and result.passed:
 			continue

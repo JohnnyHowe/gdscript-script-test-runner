@@ -1,11 +1,11 @@
 class_name TestCaseResult
 
-const _TestDataObjects := preload("../../test_data_objects/main.gd")
+const TestDataObjects := preload("../../test_data_objects/main.gd")
 const _NO_REASON_GIVEN := "No reason given"
 
 var passed: bool
 var message: String
-var test: _TestDataObjects.Test
+var test: TestDataObjects.Test
 
 
 @warning_ignore("SHADOWED_VARIABLE")
