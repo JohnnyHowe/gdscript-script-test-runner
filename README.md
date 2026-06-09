@@ -2,17 +2,17 @@
 Can test any plain objects.
 
 # Running Tests
+With python wrapper (preferred - Godot is a bit weird in some consoles)
+```
+python addons/gdscript-script-test-runner/src/run_tests.py
+```
+
+or with Godot directly
 ```
 godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd
 ```
 
-## Running Specific Tests
-The first two arguments after the above command are file and method filters (regex).
-
-```
-godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd -- file_filter=<file_filter>, method_filter=<method_filter>
-```
-## CLI Parameters (Godot)
+# CLI Parameters (Godot)
 
 | Name | Type | Default | Description |
 | - | - | - | - |
