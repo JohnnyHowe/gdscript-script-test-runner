@@ -1,12 +1,12 @@
-const _TestScriptsResults := preload("../results/test_scripts_results.gd")
-const _TestScriptResults := preload("../results/test_script_results.gd")
+const _TestSuiteResult := preload("../results/test_suite_result.gd")
+const _TestFileResult := preload("../results/test_file_result.gd")
 const _SECTION_SEPARATOR := "================================================================"
 
-var _results: _TestScriptsResults
+var _results: _TestSuiteResult
 var _lines: Array[String]
 
 
-func _init(results: _TestScriptsResults) -> void:
+func _init(results: _TestSuiteResult) -> void:
 	_results = results
 
 
@@ -25,24 +25,24 @@ func _build_lines(hide_passed: bool) -> void:
 	])
 
 	_append_section_header("All Results")
-	for script_result in _results.all_results:
-		var file_path: String = script_result.source_file.resource_path.trim_prefix("res://")
-		var total_count: int = script_result.all_results.size()
-		var passed_count: int = script_result.passed_results.size()
+	for file_result in _results.all_results:
+		var file_path: String = file_result.source_file.resource_path.trim_prefix("res://")
+		var total_count: int = file_result.all_results.size()
+		var passed_count: int = file_result.passed_results.size()
 		if hide_passed and passed_count == total_count:
 			continue
 		_lines.append("")
 		_lines.append("File: %s (%s/%s)" % [file_path, passed_count, total_count])
-		_append_test_script_result(script_result, hide_passed)
+		_append_test_file_result(file_result, hide_passed)
 
 	_append_section_header("Failing Tests")
 	if _results.failed_results.size() == 0:
 		_lines.append("No tests failed.")
-	for script_result in _results.failed_results:
-		var file_path: String = script_result.source_file.resource_path.trim_prefix("res://")
+	for file_result in _results.failed_results:
+		var file_path: String = file_result.source_file.resource_path.trim_prefix("res://")
 		_lines.append("")
 		_lines.append("File: %s" % [file_path])
-		_append_test_script_result(script_result, false)
+		_append_test_file_result(file_result, false)
 
 
 func _append_section_header(title: String) -> void:
@@ -51,8 +51,8 @@ func _append_section_header(title: String) -> void:
 	_lines.append(_SECTION_SEPARATOR)
 
 
-func _append_test_script_result(script_results: _TestScriptResults, hide_passed: bool) -> void:
-	for result in script_results.all_results:
+func _append_test_file_result(file_result: _TestFileResult, hide_passed: bool) -> void:
+	for result in file_result.all_results:
 		if hide_passed and result.passed:
 			continue
 		_lines.append("- %s" % result.get_display_string())

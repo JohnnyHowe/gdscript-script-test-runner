@@ -5,7 +5,7 @@ const _TestDataObjects := preload("../test_data_objects/main.gd")
 const _TestResultStandardizer := preload("./test_result_standardizer.gd")
 
 
-static func run(test_case: TestCase, file_instance: Object) -> ScriptTestResult:
+static func run(test_case: TestCase, file_instance: Object) -> TestCaseResult:
 	var method_name := String(test_case.method_name)
 	var raw_result = file_instance.call(method_name)
 	var compiled_result := _TestResultStandardizer.standardize(raw_result)

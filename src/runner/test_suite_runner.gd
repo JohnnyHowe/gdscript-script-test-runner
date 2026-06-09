@@ -3,16 +3,16 @@ const TestSuite := preload("../discovery_simplified/data/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const _TestFileRunner := preload("./test_file_runner.gd")
 const _Configuration := preload("../configuration.gd")
-const _TestScriptResults := preload("../results/test_script_results.gd")
-const _TestScriptsResults := preload("../results/test_scripts_results.gd")
+const _TestFileResult := preload("../results/test_file_result.gd")
+const _TestSuiteResult := preload("../results/test_suite_result.gd")
 
-func run(configuration: _Configuration, test_suite: TestSuite) -> _TestScriptsResults:
-	var script_results: Array[_TestScriptResults] = []
+func run(configuration: _Configuration, test_suite: TestSuite) -> _TestSuiteResult:
+	var file_results: Array[_TestFileResult] = []
 	for test_file: TestFile in test_suite.files:
 		var script: GDScript = load(String(test_file.file_path))
 		var results := _TestFileRunner.run(configuration, test_file, script)
-		var script_result := _TestScriptResults.new(script, results)
-		script_results.append(script_result)
-		if configuration.stop_on_first_failed_test and not script_result.passed:
+		var file_result := _TestFileResult.new(script, results)
+		file_results.append(file_result)
+		if configuration.stop_on_first_failed_test and not file_result.passed:
 			break
-	return _TestScriptsResults.new(configuration, script_results)
+	return _TestSuiteResult.new(configuration, file_results)

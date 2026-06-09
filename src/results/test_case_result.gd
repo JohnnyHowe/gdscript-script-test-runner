@@ -1,4 +1,4 @@
-class_name ScriptTestResult
+class_name TestCaseResult
 
 const _TestDataObjects := preload("../test_data_objects/main.gd")
 const _NO_REASON_GIVEN := "No reason given"
@@ -34,53 +34,53 @@ func _to_string() -> String:
 # region Extra Constructors
 # =================================================================================================
 
-static func from_equals(expected, actual, failed_message: String = _NO_REASON_GIVEN, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
+static func from_equals(expected, actual, failed_message: String = _NO_REASON_GIVEN, equals_override := EqualsOverride.equals_operator) -> TestCaseResult:
 	var correct_type := typeof(expected) == typeof(actual)
 
 	if not correct_type:
 		var comparision = "\n\tExpected %s: %s\n\tGot %s: %s" % [type_string(typeof(expected)), expected, type_string(typeof(actual)), actual]
 		var message = (failed_message + ". " if failed_message != "" else "") + comparision
-		return ScriptTestResult.new(false, message)
+		return TestCaseResult.new(false, message)
 
 	return from_equivalent(expected, actual, failed_message, equals_override)	
 
 
-static func from_equivalent(expected, actual, failed_message: String = _NO_REASON_GIVEN, equals_override := EqualsOverride.equals_operator) -> ScriptTestResult:
+static func from_equivalent(expected, actual, failed_message: String = _NO_REASON_GIVEN, equals_override := EqualsOverride.equals_operator) -> TestCaseResult:
 	if equals_override.call(expected, actual):
-		return ScriptTestResult.new(true)
+		return TestCaseResult.new(true)
 
 	var comparision = "\n\tExpected: %s\n\tGot:      %s" % [expected, actual]
 	var final_message = (failed_message + ". " if failed_message != "" else "") + comparision
-	return ScriptTestResult.new(false, final_message)
+	return TestCaseResult.new(false, final_message)
 
 
-static func not_implemented() -> ScriptTestResult:
-	return ScriptTestResult.fail("Test not implemented!")
+static func not_implemented() -> TestCaseResult:
+	return TestCaseResult.fail("Test not implemented!")
 
 
-static func fail(fail_message: String = _NO_REASON_GIVEN) -> ScriptTestResult:
-	return ScriptTestResult.new(false, fail_message)
+static func fail(fail_message: String = _NO_REASON_GIVEN) -> TestCaseResult:
+	return TestCaseResult.new(false, fail_message)
 
 
-static func succeed() -> ScriptTestResult:
-	return ScriptTestResult.new(true)
+static func succeed() -> TestCaseResult:
+	return TestCaseResult.new(true)
 
 
-static func contains_same_items(expected: Array, real: Array, equals_override := EqualsOverride.equals_operator_type_safe) -> Array[ScriptTestResult]:
-	var test_results: Array[ScriptTestResult] = []
+static func contains_same_items(expected: Array, real: Array, equals_override := EqualsOverride.equals_operator_type_safe) -> Array[TestCaseResult]:
+	var test_results: Array[TestCaseResult] = []
 
-	test_results.append(ScriptTestResult.new(expected.size() == real.size(), "Expected array of size %s, got %s" % [expected.size(), real.size()]))
+	test_results.append(TestCaseResult.new(expected.size() == real.size(), "Expected array of size %s, got %s" % [expected.size(), real.size()]))
 
 	for expected_item in ArrayUtility.ArraySetOperations.difference(expected, real, equals_override):
-		test_results.append(ScriptTestResult.fail("Expected to find %s" % _get_item_str(expected_item)))
+		test_results.append(TestCaseResult.fail("Expected to find %s" % _get_item_str(expected_item)))
 	for real_item in ArrayUtility.ArraySetOperations.difference(real, expected, equals_override):
-		test_results.append(ScriptTestResult.fail("Didn't expect to find %s" % _get_item_str(real_item)))
+		test_results.append(TestCaseResult.fail("Didn't expect to find %s" % _get_item_str(real_item)))
 
 	return test_results
 
 
-static func exists(obj: Variant, error_message:="Object reference invalid!") -> ScriptTestResult:
-	return ScriptTestResult.new(obj != null and is_instance_valid(obj), error_message)
+static func exists(obj: Variant, error_message:="Object reference invalid!") -> TestCaseResult:
+	return TestCaseResult.new(obj != null and is_instance_valid(obj), error_message)
 
 # =================================================================================================
 # region ???

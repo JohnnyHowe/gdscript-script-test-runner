@@ -4,30 +4,30 @@ const _TestFilter := preload("res://addons/gdscript-script-test-runner/src/test_
 const _Fixture := preload("./fixtures/discovery_fixture.gd")
 
 
-func test_discovers_regular_and_generated_tests() -> Array[ScriptTestResult]:
+func test_discovers_regular_and_generated_tests() -> Array[TestCaseResult]:
 	var discoverer = _create_discoverer(".*")
 	var tests: Array = discoverer.discover(_Fixture)
-	var results: Array[ScriptTestResult] = []
-	results.append(ScriptTestResult.from_equals(3, tests.size()))
-	results.append(ScriptTestResult.from_equals("test_generated_a", tests[0].name))
-	results.append(ScriptTestResult.from_equals("generated", tests[0].kind))
-	results.append(ScriptTestResult.from_equals("sample_test_generator", tests[0].source_method_name))
-	results.append(ScriptTestResult.from_equals(5, tests[0].line))
-	results.append(ScriptTestResult.from_equals("test_generated_b", tests[1].name))
-	results.append(ScriptTestResult.from_equals(5, tests[1].line))
-	results.append(ScriptTestResult.from_equals("test_regular", tests[2].name))
-	results.append(ScriptTestResult.from_equals("regular", tests[2].kind))
-	results.append(ScriptTestResult.from_equals(12, tests[2].line))
+	var results: Array[TestCaseResult] = []
+	results.append(TestCaseResult.from_equals(3, tests.size()))
+	results.append(TestCaseResult.from_equals("test_generated_a", tests[0].name))
+	results.append(TestCaseResult.from_equals("generated", tests[0].kind))
+	results.append(TestCaseResult.from_equals("sample_test_generator", tests[0].source_method_name))
+	results.append(TestCaseResult.from_equals(5, tests[0].line))
+	results.append(TestCaseResult.from_equals("test_generated_b", tests[1].name))
+	results.append(TestCaseResult.from_equals(5, tests[1].line))
+	results.append(TestCaseResult.from_equals("test_regular", tests[2].name))
+	results.append(TestCaseResult.from_equals("regular", tests[2].kind))
+	results.append(TestCaseResult.from_equals(12, tests[2].line))
 	return results
 
 
-func test_respects_method_filter() -> Array[ScriptTestResult]:
+func test_respects_method_filter() -> Array[TestCaseResult]:
 	var discoverer = _create_discoverer("^test_regular$")
 	var tests: Array = discoverer.discover(_Fixture)
-	var results: Array[ScriptTestResult] = []
-	results.append(ScriptTestResult.from_equals(1, tests.size()))
-	results.append(ScriptTestResult.from_equals("test_regular", tests[0].name))
-	results.append(ScriptTestResult.from_equals(12, tests[0].line))
+	var results: Array[TestCaseResult] = []
+	results.append(TestCaseResult.from_equals(1, tests.size()))
+	results.append(TestCaseResult.from_equals("test_regular", tests[0].name))
+	results.append(TestCaseResult.from_equals(12, tests[0].line))
 	return results
 
 

@@ -52,15 +52,15 @@ All tests must be in files ending with `.tests.gd`
 
 ## Unit Tests
 ```gdscript
-func test_<name>() -> ScriptTestResult | Array[ScriptTestResult]
+func test_<name>() -> TestCaseResult | Array[TestCaseResult]
 ```
 
 For example
 
 ```gdscript
-func test_condition() -> ScriptTestResult:
+func test_condition() -> TestCaseResult:
 	...
-	return ScriptTestResult.new(condition)
+	return TestCaseResult.new(condition)
 ```
 
 ## Unit Test Generator
