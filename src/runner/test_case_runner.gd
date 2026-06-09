@@ -1,5 +1,5 @@
 ## Runs one discovered test case.
-const TestSuite := preload("../discovery/data/test_suite.gd")
+const TestSuite := preload("../data/tests/test_suite.gd")
 const TestCase := TestSuite.TestCase
 const _TestDataObjects := preload("../test_data_objects/main.gd")
 const _TestResultStandardizer := preload("./test_result_standardizer.gd")

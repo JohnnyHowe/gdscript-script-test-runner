@@ -1,7 +1,7 @@
 ## Public entry point for the test discovery namespace.
 ## Finds tests without running them and can adapt discovered data for the existing runner.
 const SearchCriteria := preload("./search_criteria.gd")
-const TestSuite := preload("./data/test_suite.gd")
+const TestSuite := preload("../data/tests/test_suite.gd")
 const TestFileFinder := preload("./scanning/test_file_finder.gd")
 const TestFileLoader := preload("./reading/test_file_loader.gd")
 

@@ -1,10 +1,10 @@
 ## Runs every discovered test file and returns the aggregate suite result.
-const TestSuite := preload("../discovery/data/test_suite.gd")
+const TestSuite := preload("../data/tests/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const _TestFileRunner := preload("./test_file_runner.gd")
 const _Configuration := preload("../configuration.gd")
-const _TestFileResult := preload("../results/test_file_result.gd")
-const _TestSuiteResult := preload("../results/test_suite_result.gd")
+const _TestFileResult := preload("../data/results/test_file_result.gd")
+const _TestSuiteResult := preload("../data/results/test_suite_result.gd")
 
 func run(configuration: _Configuration, test_suite: TestSuite) -> _TestSuiteResult:
 	var file_results: Array[_TestFileResult] = []

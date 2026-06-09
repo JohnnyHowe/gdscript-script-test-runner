@@ -1,5 +1,5 @@
-const _TestSuiteResult := preload("../results/test_suite_result.gd")
-const _TestFileResult := preload("../results/test_file_result.gd")
+const _TestSuiteResult := preload("../data/results/test_suite_result.gd")
+const _TestFileResult := preload("../data/results/test_file_result.gd")
 const _SECTION_SEPARATOR := "================================================================"
 
 var _results: _TestSuiteResult

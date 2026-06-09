@@ -1,6 +1,6 @@
 class_name TestCaseResult
 
-const _TestDataObjects := preload("../test_data_objects/main.gd")
+const _TestDataObjects := preload("../../test_data_objects/main.gd")
 const _NO_REASON_GIVEN := "No reason given"
 
 var passed: bool

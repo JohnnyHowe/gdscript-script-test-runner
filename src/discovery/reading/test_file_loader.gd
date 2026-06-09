@@ -1,5 +1,5 @@
 const SearchCriteria := preload("../search_criteria.gd")
-const TestSuite := preload("../data/test_suite.gd")
+const TestSuite := preload("../../data/tests/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const TestCase := TestSuite.TestCase
 const GDScriptMethodLineIndex := preload("../parsing/gdscript_method_line_index.gd")

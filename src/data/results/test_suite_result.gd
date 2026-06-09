@@ -1,4 +1,4 @@
-const _Configuration := preload("../configuration.gd")
+const _Configuration := preload("../../configuration.gd")
 const TestFileResult := preload("./test_file_result.gd")
 
 
