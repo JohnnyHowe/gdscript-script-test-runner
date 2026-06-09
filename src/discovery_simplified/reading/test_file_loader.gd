@@ -1,18 +1,18 @@
-const Configuration := preload("../../configuration.gd")
+const SearchCriteria := preload("../search_criteria.gd")
 const TestSuite := preload("../data/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const TestCase := TestSuite.TestCase
 const GDScriptMethodLineIndex := preload("../parsing/gdscript_method_line_index.gd")
 
-var _configuration: Configuration
+var _search_criteria: SearchCriteria
 var _script: GDScript
 var _file_path: String
 var _method_lines: Dictionary[String, int]
 
 
-func _init(script: GDScript, configuration: Configuration) -> void:
+func _init(script: GDScript, search_criteria: SearchCriteria) -> void:
 	_script = script
-	_configuration = configuration
+	_search_criteria = search_criteria
 	_file_path = _script.resource_path
 	_method_lines = GDScriptMethodLineIndex.get_method_lines(_file_path)
 
@@ -35,9 +35,9 @@ func load() -> TestFile:
 
 func _load_case_from_method(method: Dictionary) -> TestCase:
 	var method_name: String = method["name"]
-	if _configuration.filter.should_ignore_method(method_name):
+	if _search_criteria.filter.should_ignore_method(method_name):
 		return null
-	if not method_name.begins_with(_configuration.test_function_name_prefix):
+	if not method_name.begins_with(_search_criteria.test_function_name_prefix):
 		return null
 
 	return _load_case(

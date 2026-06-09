@@ -1,18 +1,18 @@
 ## Finds GDScript test files under the configured search root.
 ## Discovery uses direct directory traversal so newly created scripts are visible immediately.
-const _Configuration := preload("../../configuration.gd")
+const SearchCriteria := preload("../search_criteria.gd")
 
-var _configuration: _Configuration
+var _search_criteria: SearchCriteria
 
 
-func _init(configuration: _Configuration) -> void:
-	_configuration = configuration
+func _init(search_criteria: SearchCriteria) -> void:
+	_search_criteria = search_criteria
 
 
 func find() -> Array[GDScript]:
 	var test_files: Array[GDScript] = []
 	for file_path in _find_candidate_file_paths():
-		if _configuration.filter.should_ignore_file(file_path):
+		if _search_criteria.filter.should_ignore_file(file_path):
 			continue
 		var test_file = load(file_path)
 		if test_file is GDScript:
@@ -24,7 +24,7 @@ func find() -> Array[GDScript]:
 
 func _find_candidate_file_paths() -> Array[String]:
 	var file_paths: Array[String] = []
-	_append_candidate_file_paths(_configuration.search_root, file_paths)
+	_append_candidate_file_paths(_search_criteria.search_root, file_paths)
 	file_paths.sort()
 	return file_paths
 
@@ -43,7 +43,7 @@ func _append_candidate_file_paths(folder_path: String, file_paths: Array[String]
 		var file_path := folder_path.path_join(file_name)
 		if directory.current_is_dir():
 			_append_candidate_file_paths(file_path, file_paths)
-		elif file_path.ends_with(_configuration.test_file_name_postfix):
+		elif file_path.ends_with(_search_criteria.test_file_name_suffix):
 			file_paths.append(file_path)
 		file_name = directory.get_next()
 
