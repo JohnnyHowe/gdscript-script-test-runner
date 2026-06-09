@@ -6,7 +6,7 @@ import { promisify } from "util";
 const controllerId = "gdscriptScriptTestRunner.tests";
 const controllerLabel = "GDScript Script Test Runner";
 const discoveryResultsPath = "discovered_tests.json";
-const simplifiedDiscoveryScriptPath = "addons/gdscript-script-test-runner/src/discovery/discover.gd";
+const discoveryScriptPath = "addons/gdscript-script-test-runner/src/discovery/discover.gd";
 const execFileAsync = promisify(execFile);
 
 interface DiscoveryResults {
@@ -61,21 +61,21 @@ async function discoverTests(controller: vscode.TestController): Promise<void> {
 		return;
 	}
 
-	const discovered = await runSimplifiedDiscovery(projectRoot);
+	const discovered = await runDiscovery(projectRoot);
 	if (!discovered) {
 		return;
 	}
 
 	const discoveryResults = await loadDiscoveryResults(projectRoot);
 	if (discoveryResults === undefined) {
-		vscode.window.showInformationMessage("Simplified discovery did not create discovered_tests.json.");
+		vscode.window.showInformationMessage("Discovery did not create discovered_tests.json.");
 		return;
 	}
 
 	loadTestsFromDiscoveryResults(controller, projectRoot, discoveryResults);
 }
 
-async function runSimplifiedDiscovery(projectRoot: vscode.Uri): Promise<boolean> {
+async function runDiscovery(projectRoot: vscode.Uri): Promise<boolean> {
 	try {
 		await execFileAsync(
 			"godot",
@@ -83,7 +83,7 @@ async function runSimplifiedDiscovery(projectRoot: vscode.Uri): Promise<boolean>
 				"--headless",
 				"--quit",
 				"-s",
-				simplifiedDiscoveryScriptPath,
+				discoveryScriptPath,
 				"--",
 				`results_file=res://${discoveryResultsPath}`,
 				"hide_results=true"
@@ -93,7 +93,7 @@ async function runSimplifiedDiscovery(projectRoot: vscode.Uri): Promise<boolean>
 		return true;
 	} catch (error) {
 		const message = error instanceof Error ? error.message : String(error);
-		vscode.window.showWarningMessage(`Could not run simplified GDScript test discovery: ${message}`);
+		vscode.window.showWarningMessage(`Could not run GDScript test discovery: ${message}`);
 		return false;
 	}
 }

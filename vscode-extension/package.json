@@ -12,8 +12,7 @@
 		"Testing"
 	],
 	"activationEvents": [
-		"onLanguage:gdscript",
-		"onCommand:gdscriptScriptTestRunner.refreshTests"
+		"onLanguage:gdscript"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
