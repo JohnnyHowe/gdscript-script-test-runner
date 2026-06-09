@@ -1,3 +1,4 @@
+## Runs one discovered test case and normalizes its return value into a ScriptTestResult.
 const _TestDataObjects := preload("../test_data_objects/main.gd")
 
 

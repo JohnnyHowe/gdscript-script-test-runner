@@ -4,7 +4,7 @@ const _Configuration := preload("./configuration.gd")
 const _TestDiscovery := preload("./discovery/test_discovery.gd")
 const _Logging := preload("./logging/main.gd")
 const _TestFilter := preload("./test_filter.gd")
-const _TestScriptsRunner := preload("./runner/test_scripts_runner.gd")
+const _TestSuiteRunner := preload("./runner/test_suite_runner.gd")
 
 
 func _initialize():
@@ -17,7 +17,7 @@ func _run():
 
 	var test_scripts := _TestDiscovery.new(configuration).discover_test_scripts()
 
-	var runner := _TestScriptsRunner.new()
+	var runner := _TestSuiteRunner.new()
 	var results := runner.run(configuration, test_scripts)
 
 	var log_creator := _Logging.Log.new(results)
