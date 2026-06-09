@@ -52,26 +52,7 @@ func _get_test_suite_from_cli_args(args: Dictionary) -> TestSuite:
 		var search_criteria: SearchCriteria = SearchCriteria.from_cli_args(args)
 		return TestDiscovery.new(search_criteria).discover()
 	
-	return _load_test_suite(test_suite_file_path)
-
-
-func _load_test_suite(path: StringName) -> TestSuite:
-	if path.is_empty():
-		return null
-	if not FileAccess.file_exists(path):
-		push_error("Test suite path (%s) does not exist!" % [path])
-		return null
-
-	var contents := FileAccess.get_file_as_string(path)
-
-	var parser := JSON.new()
-	var err := parser.parse(contents)
-
-	if err != OK:
-		push_error("Test suite (%s) json parse failed! error=\"%s\"" % [path, parser.get_error_message()])
-		return null
-
-	return TestSuite.from_dictionary(parser.data)
+	return CliHelpers.load_test_suite(test_suite_file_path)
 
 
 func _quit(exit_code: int):

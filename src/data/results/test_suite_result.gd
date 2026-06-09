@@ -42,6 +42,14 @@ func to_dictionary() -> Dictionary:
 	}
 
 
+static func from_dictionary(dictionary: Dictionary):
+	var results: Array[TestFileResult] = []
+	for test_file_result_dictionary: Dictionary in dictionary["files"]:
+		results.append(TestFileResult.from_dictionary(test_file_result_dictionary))
+
+	return new(results)
+
+
 func _populate_passed_and_failed_results() -> void:
 	var new_failed_results: Array[TestFileResult] = []
 	var new_passed_results: Array[TestFileResult] = []

@@ -35,6 +35,14 @@ func to_dictionary() -> Dictionary:
 	}
 
 
+static func from_dictionary(dictionary: Dictionary):
+	var results: Array[TestCaseResult] = []
+	for test_case_result_dictionary: Dictionary in dictionary["cases"]:
+		results.append(TestCaseResult.from_dictionary(test_case_result_dictionary))
+
+	return new(load(dictionary["file_path"]) as GDScript, results)
+
+
 func _populate_passed_and_failed_results() -> void:
 	var new_results: Array[TestCaseResult] = []
 	var new_passed_results: Array[TestCaseResult] = []
