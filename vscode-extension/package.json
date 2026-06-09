@@ -4,6 +4,7 @@
 	"description": "VS Code integration for the GDScript Script Test Runner addon.",
 	"version": "0.0.1",
 	"publisher": "local",
+	"license": "MIT",
 	"engines": {
 		"vscode": "^1.90.0"
 	},
@@ -11,8 +12,7 @@
 		"Testing"
 	],
 	"activationEvents": [
-		"onLanguage:gdscript",
-		"onCommand:gdscriptScriptTestRunner.hello"
+		"onLanguage:gdscript"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
@@ -26,7 +26,7 @@
 	"scripts": {
 		"compile": "tsc -p ./",
 		"watch": "tsc -watch -p ./",
-		"package": "vsce package --out gdscript-script-test-runner-vscode.vsix",
+		"package": "vsce package --allow-missing-repository --out gdscript-script-test-runner-vscode.vsix",
 		"install:local": "npm run compile && npm run package && code --install-extension gdscript-script-test-runner-vscode.vsix --force"
 	},
 	"devDependencies": {
