@@ -1,5 +1,5 @@
 ## Runs every discovered test case in one test file.
-const TestSuite := preload("../discovery_simplified/data/test_suite.gd")
+const TestSuite := preload("../discovery/data/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const TestCase := TestSuite.TestCase
 const _TestCaseRunner := preload("./test_case_runner.gd")

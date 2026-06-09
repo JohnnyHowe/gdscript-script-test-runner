@@ -1,5 +1,5 @@
 ## Runs every discovered test file and returns the aggregate suite result.
-const TestSuite := preload("../discovery_simplified/data/test_suite.gd")
+const TestSuite := preload("../discovery/data/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const _TestFileRunner := preload("./test_file_runner.gd")
 const _Configuration := preload("../configuration.gd")

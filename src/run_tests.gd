@@ -1,8 +1,8 @@
 extends SceneTree
 
 const _Configuration := preload("./configuration.gd")
-const _SearchCriteria := preload("./discovery_simplified/search_criteria.gd")
-const _TestDiscovery := preload("./discovery_simplified/test_discovery.gd")
+const _SearchCriteria := preload("./discovery/search_criteria.gd")
+const _TestDiscovery := preload("./discovery/test_discovery.gd")
 const _Logging := preload("./logging/main.gd")
 const _TestFilter := preload("./test_filter.gd")
 const _TestSuiteRunner := preload("./runner/test_suite_runner.gd")

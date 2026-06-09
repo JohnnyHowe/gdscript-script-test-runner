@@ -6,7 +6,7 @@ import { promisify } from "util";
 const controllerId = "gdscriptScriptTestRunner.tests";
 const controllerLabel = "GDScript Script Test Runner";
 const discoveryResultsPath = "discovered_tests.json";
-const simplifiedDiscoveryScriptPath = "addons/gdscript-script-test-runner/src/discovery_simplified/discover.gd";
+const simplifiedDiscoveryScriptPath = "addons/gdscript-script-test-runner/src/discovery/discover.gd";
 const execFileAsync = promisify(execFile);
 
 interface DiscoveryResults {

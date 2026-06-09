@@ -1,70 +1,63 @@
-# Test Discovery
+# Simplified Test Discovery
 
-`test_discovery.gd` is the public entry point for the discovery namespace.
+`discovery` is a smaller discovery pipeline that finds test files and test cases without creating runner callables or legacy discovery metadata.
 
-Discovery finds test scripts and test methods without running them. The regular test runner uses it, and it can also be called directly to produce JSON metadata.
+The public entry point is `test_discovery.gd`. The command line entry point is `discover.gd`.
 
 ## Structure
 
 ```text
 discovery/
+  discover.gd
+  search_criteria.gd
   test_discovery.gd
   data/
-    discovered_test_data.gd
-    discovered_test_script_data.gd
-  loading/
-    test_script_discoverer.gd
-  output/
-    discovery_json.gd
+    test_suite.gd
+    test_file.gd
+    test_case.gd
   parsing/
     gdscript_method_line_index.gd
+  reading/
+    test_file_loader.gd
   scanning/
     test_file_finder.gd
 ```
 
-- `test_discovery.gd` is the public facade and namespace entry point.
-- `data/` contains discovery data objects.
-- `scanning/` finds candidate test files.
-- `loading/` turns one script into discovered tests.
-- `parsing/` reads source metadata that Godot reflection does not provide.
-- `output/` formats discovery data for external tools.
+- `search_criteria.gd` contains the file and method search settings needed by simplified discovery.
+- `test_discovery.gd` coordinates scanning and reading, returning a `TestSuite`.
+- `scanning/` finds candidate `GDScript` test files.
+- `reading/` turns one script into a `TestFile` with `TestCase` entries.
+- `parsing/` reads 1-based method declaration line numbers from source files.
+- `data/` contains JSON-friendly discovery data objects with `to_dictionary()` methods.
 
 ## Command Line JSON
 
 From the Godot project root:
 
 ```shell
-godot --headless --quit -s addons/gdscript-script-test-runner/src/discover_tests.gd -- results_file=res://discovered_tests.json
-```
-
-Or with the Python wrapper:
-
-```shell
-python addons/gdscript-script-test-runner/src/discover_tests.py --results-file res://discovered_tests.json
+godot --headless --quit -s addons/gdscript-script-test-runner/src/discovery/discover.gd -- results_file=res://discovered_tests.json
 ```
 
 Useful filters:
 
 ```shell
-python addons/gdscript-script-test-runner/src/discover_tests.py --test-file-pattern "combat" --test-name-pattern "^test_"
+godot --headless --quit -s addons/gdscript-script-test-runner/src/discovery/discover.gd -- test_file_pattern=combat test_name_pattern=^test_ results_file=res://discovered_tests.json
 ```
 
-The JSON output contains only metadata, not callables or script instances:
+Use `hide_results=true` to write the file without printing the JSON to stdout.
+
+The JSON output mirrors the simplified data objects:
 
 ```json
 {
-	"test_scripts_found": 1,
-	"tests_found": 2,
-	"test_scripts": [
+	"files": [
 		{
 			"file_path": "res://tests/example.tests.gd",
-			"tests": [
+			"cases": [
 				{
 					"file_path": "res://tests/example.tests.gd",
-					"name": "test_example",
-					"source_method": "test_example",
-					"line": 12,
-					"kind": "regular"
+					"method_name": "test_example",
+					"line_number": 12
 				}
 			]
 		}
@@ -75,36 +68,26 @@ The JSON output contains only metadata, not callables or script instances:
 ## GDScript Usage
 
 ```gdscript
-const _Configuration := preload("res://addons/gdscript-script-test-runner/src/configuration.gd")
-const _TestDiscovery := preload("res://addons/gdscript-script-test-runner/src/discovery/test_discovery.gd")
-const _TestFilter := preload("res://addons/gdscript-script-test-runner/src/test_filter.gd")
+const SearchCriteria := preload("res://addons/gdscript-script-test-runner/src/discovery/search_criteria.gd")
+const TestDiscovery := preload("res://addons/gdscript-script-test-runner/src/discovery/test_discovery.gd")
 
 
 func discover_tests():
-	var filter := _TestFilter.new(".*", ".*", [] as Array[String])
-	var configuration := _Configuration.new(
-		"res://",
-		filter,
-		".tests.gd",
-		"test_",
-		"_test_generator",
-		false
-	)
-
-	var discovery := _TestDiscovery.new(configuration)
-	var discovered_test_scripts := discovery.discover()
-	var json := _TestDiscovery.DiscoveryJson.to_json(discovered_test_scripts)
+	var search_criteria := SearchCriteria.new()
+	var suite := TestDiscovery.new(search_criteria).discover()
+	var json := JSON.stringify(suite.to_dictionary(), "\t")
 	print(json)
 ```
 
-For runner-compatible objects:
+For CLI-compatible criteria:
 
 ```gdscript
-var executable_test_scripts := _TestDiscovery.new(configuration).discover_test_scripts()
+var args := UserArgumentParser.parse_cmdline_user_args()
+var search_criteria = SearchCriteria.from_cli_args(args)
 ```
 
-## Discovered Data
+## Data Objects
 
-- `DiscoveredTestScript` represents one test script and its discovered tests.
-- `DiscoveredTest` represents one regular or generated test, including the 1-based line where the source method is declared.
-- `DiscoveryJson` converts discovered data into JSON-safe dictionaries or strings.
+- `TestSuite` contains `files: Array[TestFile]`.
+- `TestFile` contains `file_path: StringName` and `cases: Array[TestCase]`.
+- `TestCase` contains `file_path: StringName`, `method_name: StringName`, and `line_number: int`.
