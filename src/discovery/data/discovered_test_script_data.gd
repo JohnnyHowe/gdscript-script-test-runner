@@ -1,7 +1,7 @@
 ## Data for one discovered test script.
 ## Groups a GDScript resource with the tests discovered inside it.
 const _TestDataObjects := preload("../../test_data_objects/main.gd")
-const DiscoveredTest := preload("./discovered_test.gd")
+const DiscoveredTest := preload("./discovered_test_data.gd")
 
 var test_file: GDScript:
 	get: return _test_file

@@ -3,8 +3,8 @@
 const _Configuration := preload("../configuration.gd")
 const _TestDataObjects := preload("../test_data_objects/main.gd")
 
-const DiscoveredTest := preload("./data/discovered_test.gd")
-const DiscoveredTestScript := preload("./data/discovered_test_script.gd")
+const DiscoveredTest := preload("./data/discovered_test_data.gd")
+const DiscoveredTestScript := preload("./data/discovered_test_script_data.gd")
 const DiscoveryJson := preload("./output/discovery_json.gd")
 const TestFileFinder := preload("./scanning/test_file_finder.gd")
 const TestScriptDiscoverer := preload("./loading/test_script_discoverer.gd")

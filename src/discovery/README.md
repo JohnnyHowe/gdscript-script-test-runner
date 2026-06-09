@@ -10,8 +10,8 @@ Discovery finds test scripts and test methods without running them. The regular 
 discovery/
   test_discovery.gd
   data/
-    discovered_test.gd
-    discovered_test_script.gd
+    discovered_test_data.gd
+    discovered_test_script_data.gd
   loading/
     test_script_discoverer.gd
   output/

@@ -1,6 +1,6 @@
 ## Converts discovered test data into JSON-safe dictionaries and strings.
 ## Runtime-only values like Callables, script resources, and instances are omitted.
-const DiscoveredTestScript := preload("../data/discovered_test_script.gd")
+const DiscoveredTestScript := preload("../data/discovered_test_script_data.gd")
 
 
 static func to_json(test_scripts: Array) -> String:

@@ -1,7 +1,7 @@
 ## Discovers tests inside one GDScript test file.
 ## Regular test methods become one discovered test; generator methods produce generated tests.
 const _Configuration := preload("../../configuration.gd")
-const DiscoveredTest := preload("../data/discovered_test.gd")
+const DiscoveredTest := preload("../data/discovered_test_data.gd")
 const GDScriptMethodLineIndex := preload("../parsing/gdscript_method_line_index.gd")
 
 const REGULAR_TEST_KIND := "regular"
