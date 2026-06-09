@@ -2,7 +2,7 @@ extends SceneTree
 
 const SearchCriteria := preload("./discovery/search_criteria.gd")
 const TestDiscovery := preload("./discovery/test_discovery.gd")
-const Logging := preload("./logging/main.gd")
+const CliHelpers := preload("./cli_helpers/cli_helpers.gd")
 const TestFilter := preload("./test_filter.gd")
 const TestSuiteRunner := preload("./runner/test_suite_runner.gd")
 const TestSuite := preload("./data/tests/test_suite.gd")
@@ -28,7 +28,7 @@ func _run():
 	var runner := TestSuiteRunner.new()
 	var results := runner.run(test_suite)
 
-	# var log_creator := Logging.Log.new(results)
+	# var log_creator := CliHelpers.Log.new(results)
 	
 	# var log := log_creator.as_string(hide_passed_tests)
 
@@ -39,7 +39,7 @@ func _run():
 		print(results_json)
 
 	if not results_file.is_empty():
-		Logging.WriteToFile.write(results_file, results_json)
+		CliHelpers.WriteToFile.write(results_file, results_json)
 
 	var exit_code := 0 if results.passed else 1
 	_quit(exit_code)
