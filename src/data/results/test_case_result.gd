@@ -1,11 +1,11 @@
 class_name TestCaseResult
 
-const TestDataObjects := preload("../../test_data_objects/main.gd")
+const TestCase := preload("../tests/test_case.gd")
 const _NO_REASON_GIVEN := "No reason given"
 
 var passed: bool
 var message: String
-var test: TestDataObjects.Test
+var test_case: TestCase
 
 
 @warning_ignore("SHADOWED_VARIABLE")
@@ -18,7 +18,7 @@ func _init(passed: bool, failed_message: String = _NO_REASON_GIVEN) -> void:
 
 func get_display_string() -> String:
 	var passed_state_emoji := "✅" if passed else "❌"
-	var header := "%s %s" % [passed_state_emoji, test.name]
+	var header := "%s %s" % [passed_state_emoji, test_case.method_name]
 
 	if passed:
 		return header
@@ -42,7 +42,7 @@ static func from_equals(expected, actual, failed_message: String = _NO_REASON_GI
 		var message = (failed_message + ". " if failed_message != "" else "") + comparision
 		return TestCaseResult.new(false, message)
 
-	return from_equivalent(expected, actual, failed_message, equals_override)	
+	return from_equivalent(expected, actual, failed_message, equals_override)
 
 
 static func from_equivalent(expected, actual, failed_message: String = _NO_REASON_GIVEN, equals_override := EqualsOverride.equals_operator) -> TestCaseResult:
@@ -79,7 +79,7 @@ static func contains_same_items(expected: Array, real: Array, equals_override :=
 	return test_results
 
 
-static func exists(obj: Variant, error_message:="Object reference invalid!") -> TestCaseResult:
+static func exists(obj: Variant, error_message := "Object reference invalid!") -> TestCaseResult:
 	return TestCaseResult.new(obj != null and is_instance_valid(obj), error_message)
 
 # =================================================================================================
