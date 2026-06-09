@@ -1,13 +1,17 @@
 ## Runs every discovered test case in one test file.
-const _TestDataObjects := preload("../test_data_objects/main.gd")
+const TestSuite := preload("../discovery_simplified/data/test_suite.gd")
+const TestFile := TestSuite.TestFile
+const TestCase := TestSuite.TestCase
 const _TestCaseRunner := preload("./test_case_runner.gd")
 const _Configuration := preload("../configuration.gd")
 
 
-static func run(configuration: _Configuration, test_script: _TestDataObjects.TestScript) -> Array[ScriptTestResult]:
+static func run(configuration: _Configuration, test_file: TestFile, script: GDScript) -> Array[ScriptTestResult]:
 	var results: Array[ScriptTestResult] = []
-	for test: _TestDataObjects.Test in test_script.tests:
-		var result := _TestCaseRunner.run(test)
+	var file_instance := script.new()
+
+	for test_case: TestCase in test_file.cases:
+		var result := _TestCaseRunner.run(test_case, file_instance)
 		results.append(result)
 		if configuration.stop_on_first_failed_test and not result.passed:
 			break

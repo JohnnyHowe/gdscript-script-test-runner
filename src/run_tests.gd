@@ -1,7 +1,8 @@
 extends SceneTree
 
 const _Configuration := preload("./configuration.gd")
-const _TestDiscovery := preload("./discovery/test_discovery.gd")
+const _SearchCriteria := preload("./discovery_simplified/search_criteria.gd")
+const _TestDiscovery := preload("./discovery_simplified/test_discovery.gd")
 const _Logging := preload("./logging/main.gd")
 const _TestFilter := preload("./test_filter.gd")
 const _TestSuiteRunner := preload("./runner/test_suite_runner.gd")
@@ -15,10 +16,10 @@ func _run():
 	var args := UserArgumentParser.parse_cmdline_user_args()
 	var configuration := _create_configuration(args)
 
-	var test_scripts := _TestDiscovery.new(configuration).discover_test_scripts()
+	var test_suite := _TestDiscovery.new(_SearchCriteria.from_cli_args(args)).discover()
 
 	var runner := _TestSuiteRunner.new()
-	var results := runner.run(configuration, test_scripts)
+	var results := runner.run(configuration, test_suite)
 
 	var log_creator := _Logging.Log.new(results)
 	
