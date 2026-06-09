@@ -1,8 +1,8 @@
-## Discovers test methods inside one GDScript test file.
+## Discovers tests inside one GDScript test file.
 ## Regular test methods become one discovered test; generator methods produce generated tests.
-const _Configuration := preload("../configuration.gd")
-const DiscoveredTest := preload("./discovered_test.gd")
-const TestSourceLineFinder := preload("./test_source_line_finder.gd")
+const _Configuration := preload("../../configuration.gd")
+const DiscoveredTest := preload("../data/discovered_test.gd")
+const GDScriptMethodLineIndex := preload("../parsing/gdscript_method_line_index.gd")
 
 const REGULAR_TEST_KIND := "regular"
 const GENERATED_TEST_KIND := "generated"
@@ -18,7 +18,7 @@ func discover(test_file: GDScript) -> Array[DiscoveredTest]:
 	var tests: Array[DiscoveredTest] = []
 	var file_instance = test_file.new()
 	var methods: Array = file_instance.get_method_list()
-	var method_lines := TestSourceLineFinder.get_method_lines(test_file.resource_path)
+	var method_lines := GDScriptMethodLineIndex.get_method_lines(test_file.resource_path)
 	methods.sort_custom(func(a: Dictionary, b: Dictionary): return a["name"] < b["name"])
 
 	for method_dict in methods:
@@ -26,7 +26,7 @@ func discover(test_file: GDScript) -> Array[DiscoveredTest]:
 		if _configuration.filter.should_ignore_method(method_name):
 			continue
 
-		tests += _discover_method(file_instance, test_file.resource_path, method_name, method_lines.get(method_name, TestSourceLineFinder.UNKNOWN_LINE))
+		tests += _discover_method(file_instance, test_file.resource_path, method_name, method_lines.get(method_name, GDScriptMethodLineIndex.UNKNOWN_LINE))
 
 	return tests
 

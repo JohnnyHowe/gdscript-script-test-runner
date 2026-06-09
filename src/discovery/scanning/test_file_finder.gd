@@ -1,6 +1,6 @@
 ## Finds GDScript test files under the configured search root.
 ## Discovery uses direct directory traversal so newly created scripts are visible immediately.
-const _Configuration := preload("../configuration.gd")
+const _Configuration := preload("../../configuration.gd")
 
 var _configuration: _Configuration
 

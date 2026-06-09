@@ -13,11 +13,11 @@ func test_json_writer_outputs_metadata_without_runtime_objects() -> Array[Script
 		"_test_generator",
 		false
 	)
-	var tests: Array = _TestDiscovery.TestMethodDiscoverer.new(configuration).discover(_Fixture)
+	var tests: Array = _TestDiscovery.TestScriptDiscoverer.new(configuration).discover(_Fixture)
 	var test_scripts: Array = [
 		_TestDiscovery.DiscoveredTestScript.new(_Fixture, tests)
 	]
-	var dictionary := _TestDiscovery.DiscoveryJsonWriter.to_dictionary(test_scripts)
+	var dictionary := _TestDiscovery.DiscoveryJson.to_dictionary(test_scripts)
 	var first_script = dictionary["test_scripts"][0]
 	var first_test = first_script["tests"][0]
 	var results: Array[ScriptTestResult] = []

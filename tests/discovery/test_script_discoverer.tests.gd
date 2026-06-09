@@ -41,4 +41,4 @@ func _create_discoverer(method_pattern: String):
 		"_test_generator",
 		false
 	)
-	return _TestDiscovery.TestMethodDiscoverer.new(configuration)
+	return _TestDiscovery.TestScriptDiscoverer.new(configuration)

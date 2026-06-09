@@ -1,6 +1,6 @@
 ## Data for one discovered test callable.
 ## Includes runtime fields for execution and metadata fields for discovery output.
-const _TestDataObjects := preload("../test_data_objects/main.gd")
+const _TestDataObjects := preload("../../test_data_objects/main.gd")
 
 var name: String:
 	get: return _name

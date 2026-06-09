@@ -1,4 +1,4 @@
-## Finds 1-based declaration line numbers for methods in a GDScript source file.
+## Indexes 1-based declaration line numbers for methods in a GDScript source file.
 ## Used so discovery metadata can point editors and CLI tools back to source.
 const UNKNOWN_LINE := -1
 

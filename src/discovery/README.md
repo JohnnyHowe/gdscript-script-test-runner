@@ -4,6 +4,31 @@
 
 Discovery finds test scripts and test methods without running them. The regular test runner uses it, and it can also be called directly to produce JSON metadata.
 
+## Structure
+
+```text
+discovery/
+  test_discovery.gd
+  data/
+    discovered_test.gd
+    discovered_test_script.gd
+  loading/
+    test_script_discoverer.gd
+  output/
+    discovery_json.gd
+  parsing/
+    gdscript_method_line_index.gd
+  scanning/
+    test_file_finder.gd
+```
+
+- `test_discovery.gd` is the public facade and namespace entry point.
+- `data/` contains discovery data objects.
+- `scanning/` finds candidate test files.
+- `loading/` turns one script into discovered tests.
+- `parsing/` reads source metadata that Godot reflection does not provide.
+- `output/` formats discovery data for external tools.
+
 ## Command Line JSON
 
 From the Godot project root:
@@ -68,7 +93,7 @@ func discover_tests():
 
 	var discovery := _TestDiscovery.new(configuration)
 	var discovered_test_scripts := discovery.discover()
-	var json := _TestDiscovery.DiscoveryJsonWriter.to_json(discovered_test_scripts)
+	var json := _TestDiscovery.DiscoveryJson.to_json(discovered_test_scripts)
 	print(json)
 ```
 
@@ -82,4 +107,4 @@ var executable_test_scripts := _TestDiscovery.new(configuration).discover_test_s
 
 - `DiscoveredTestScript` represents one test script and its discovered tests.
 - `DiscoveredTest` represents one regular or generated test, including the 1-based line where the source method is declared.
-- `DiscoveryJsonWriter` converts discovered data into JSON-safe dictionaries or strings.
+- `DiscoveryJson` converts discovered data into JSON-safe dictionaries or strings.

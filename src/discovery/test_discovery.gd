@@ -3,28 +3,28 @@
 const _Configuration := preload("../configuration.gd")
 const _TestDataObjects := preload("../test_data_objects/main.gd")
 
-const DiscoveredTest := preload("./discovered_test.gd")
-const DiscoveredTestScript := preload("./discovered_test_script.gd")
-const DiscoveryJsonWriter := preload("./discovery_json_writer.gd")
-const TestFileFinder := preload("./test_file_finder.gd")
-const TestMethodDiscoverer := preload("./test_method_discoverer.gd")
-const TestSourceLineFinder := preload("./test_source_line_finder.gd")
+const DiscoveredTest := preload("./data/discovered_test.gd")
+const DiscoveredTestScript := preload("./data/discovered_test_script.gd")
+const DiscoveryJson := preload("./output/discovery_json.gd")
+const TestFileFinder := preload("./scanning/test_file_finder.gd")
+const TestScriptDiscoverer := preload("./loading/test_script_discoverer.gd")
+const GDScriptMethodLineIndex := preload("./parsing/gdscript_method_line_index.gd")
 
 var _configuration: _Configuration
 var _file_finder: TestFileFinder
-var _method_discoverer: TestMethodDiscoverer
+var _script_discoverer: TestScriptDiscoverer
 
 
 func _init(configuration: _Configuration) -> void:
 	_configuration = configuration
 	_file_finder = TestFileFinder.new(configuration)
-	_method_discoverer = TestMethodDiscoverer.new(configuration)
+	_script_discoverer = TestScriptDiscoverer.new(configuration)
 
 
 func discover() -> Array[DiscoveredTestScript]:
 	var test_scripts: Array[DiscoveredTestScript] = []
 	for test_file in _file_finder.find():
-		var tests := _method_discoverer.discover(test_file)
+		var tests := _script_discoverer.discover(test_file)
 		test_scripts.append(DiscoveredTestScript.new(test_file, tests))
 	return test_scripts
 

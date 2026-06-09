@@ -14,10 +14,10 @@ func _run():
 	var configuration := _create_configuration(args)
 	var discovery := _TestDiscovery.new(configuration)
 	var test_scripts := discovery.discover()
-	var json := _TestDiscovery.DiscoveryJsonWriter.to_json(test_scripts)
+	var json := _TestDiscovery.DiscoveryJson.to_json(test_scripts)
 
 	if args.has("results_file"):
-		_TestDiscovery.DiscoveryJsonWriter.write(args["results_file"], test_scripts)
+		_TestDiscovery.DiscoveryJson.write(args["results_file"], test_scripts)
 
 	if not args.get("hide_results", false):
 		print(json)
