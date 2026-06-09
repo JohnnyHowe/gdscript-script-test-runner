@@ -1,25 +1,27 @@
 import * as vscode from "vscode";
 import * as path from "path";
+import { execFile } from "child_process";
+import { promisify } from "util";
 
 const controllerId = "gdscriptScriptTestRunner.tests";
 const controllerLabel = "GDScript Script Test Runner";
 const discoveryResultsPath = "discovered_tests.json";
+const simplifiedDiscoveryScriptPath = "addons/gdscript-script-test-runner/src/discovery_simplified/discover.gd";
+const execFileAsync = promisify(execFile);
 
 interface DiscoveryResults {
-	test_scripts?: DiscoveredTestScript[];
+	files?: DiscoveredTestFile[];
 }
 
-interface DiscoveredTestScript {
+interface DiscoveredTestFile {
 	file_path: string;
-	tests?: DiscoveredTest[];
+	cases?: DiscoveredTestCase[];
 }
 
-interface DiscoveredTest {
+interface DiscoveredTestCase {
 	file_path: string;
-	name: string;
-	source_method: string;
-	line: number;
-	kind: string;
+	method_name: string;
+	line_number: number;
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -59,13 +61,41 @@ async function discoverTests(controller: vscode.TestController): Promise<void> {
 		return;
 	}
 
+	const discovered = await runSimplifiedDiscovery(projectRoot);
+	if (!discovered) {
+		return;
+	}
+
 	const discoveryResults = await loadDiscoveryResults(projectRoot);
 	if (discoveryResults === undefined) {
-		vscode.window.showInformationMessage("No discovered_tests.json file found yet.");
+		vscode.window.showInformationMessage("Simplified discovery did not create discovered_tests.json.");
 		return;
 	}
 
 	loadTestsFromDiscoveryResults(controller, projectRoot, discoveryResults);
+}
+
+async function runSimplifiedDiscovery(projectRoot: vscode.Uri): Promise<boolean> {
+	try {
+		await execFileAsync(
+			"godot",
+			[
+				"--headless",
+				"--quit",
+				"-s",
+				simplifiedDiscoveryScriptPath,
+				"--",
+				`results_file=res://${discoveryResultsPath}`,
+				"hide_results=true"
+			],
+			{ cwd: projectRoot.fsPath }
+		);
+		return true;
+	} catch (error) {
+		const message = error instanceof Error ? error.message : String(error);
+		vscode.window.showWarningMessage(`Could not run simplified GDScript test discovery: ${message}`);
+		return false;
+	}
 }
 
 async function runTests(
@@ -122,26 +152,25 @@ function loadTestsFromDiscoveryResults(
 	projectRoot: vscode.Uri,
 	results: DiscoveryResults
 ): void {
-	for (const testScript of results.test_scripts ?? []) {
-		const scriptUri = resPathToUri(projectRoot, testScript.file_path);
+	for (const testFile of results.files ?? []) {
+		const scriptUri = resPathToUri(projectRoot, testFile.file_path);
 		const scriptItem = controller.createTestItem(
-			testScript.file_path,
-			path.basename(testScript.file_path),
+			testFile.file_path,
+			path.basename(testFile.file_path),
 			scriptUri
 		);
 
 		controller.items.add(scriptItem);
 
-		for (const test of testScript.tests ?? []) {
-			const testUri = resPathToUri(projectRoot, test.file_path);
+		for (const testCase of testFile.cases ?? []) {
+			const testUri = resPathToUri(projectRoot, testCase.file_path);
 			const testItem = controller.createTestItem(
-				`${test.file_path}::${test.name}`,
-				test.name,
+				`${testCase.file_path}::${testCase.method_name}`,
+				testCase.method_name,
 				testUri
 			);
 
-			testItem.range = createLineRange(test.line);
-			testItem.description = test.kind;
+			testItem.range = createLineRange(testCase.line_number);
 			scriptItem.children.add(testItem);
 		}
 	}
