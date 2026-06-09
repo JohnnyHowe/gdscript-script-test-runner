@@ -12,14 +12,15 @@
 		"Testing"
 	],
 	"activationEvents": [
-		"onLanguage:gdscript"
+		"onLanguage:gdscript",
+		"onCommand:gdscriptScriptTestRunner.refreshTests"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
 		"commands": [
 			{
-				"command": "gdscriptScriptTestRunner.hello",
-				"title": "GDScript Test Runner: Hello"
+				"command": "gdscriptScriptTestRunner.refreshTests",
+				"title": "GDScript Test Runner: Refresh Tests"
 			}
 		]
 	},
