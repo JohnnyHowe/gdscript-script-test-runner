@@ -21,7 +21,7 @@ func _run():
 	var results := runner.run(configuration, test_scripts)
 
 	var log_creator := _Logging.Log.new(results)
-
+	
 	var log := log_creator.as_string(args.get("hide_passed_tests", false))
 
 	if not args.get("hide_results", false):
