@@ -1,5 +1,5 @@
-const DiscoveredTestScript := preload("./test_file.gd")
-const DiscoveredTest := DiscoveredTestScript.DiscoveredTest
+const TestFile := preload("./test_file.gd")
+const TestCase := TestFile.TestCase
 
 
-var files: Array[DiscoveredTestScript]
+var files: Array[TestFile] = []
