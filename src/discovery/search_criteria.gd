@@ -2,8 +2,8 @@ const TestFilter := preload("../test_filter.gd")
 
 
 var search_root: String
-var test_file_name_suffix: String
-var test_function_name_prefix: String
+var test_file_name_suffix: String = "test_"
+var test_function_name_prefix: String = "test_generator"
 var filter: TestFilter
 
 
