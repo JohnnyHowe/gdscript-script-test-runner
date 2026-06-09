@@ -30,7 +30,7 @@ func _init(source_file_value: GDScript, results: Array[TestCaseResult]) -> void:
 
 func to_dictionary() -> Dictionary:
 	return {
-		"source_file": source_file.resource_path,
+		"file_path": source_file.resource_path,
 		"cases": all_results.map(func(result: TestCaseResult): return result.to_dictionary()),
 	}
 
