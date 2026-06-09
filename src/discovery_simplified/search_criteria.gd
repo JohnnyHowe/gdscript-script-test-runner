@@ -19,3 +19,20 @@ func _init(
 		filter = TestFilter.new()
 	test_file_name_suffix = test_file_name_suffix_value
 	test_function_name_prefix = test_function_name_prefix_value
+
+
+static func from_cli_args(args: Dictionary):
+	var ignored_patterns: Array[String] = [
+		TestFilter.get_path_ignore_pattern("res://.godot")
+	]
+	var filter := TestFilter.new(
+		args.get("test_file_pattern", ".*"),
+		args.get("test_name_pattern", ".*"),
+		ignored_patterns
+	)
+	return new(
+		"res://",
+		filter,
+		".tests.gd",
+		"test_"
+	)
