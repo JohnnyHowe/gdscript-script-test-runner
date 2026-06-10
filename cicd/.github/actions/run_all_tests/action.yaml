@@ -1,0 +1,60 @@
+name: Run GDScript Tests
+description: Download Godot and run GDScript tests - UNFINISHED
+
+inputs:
+  godot-version:
+    required: true
+    description: Godot version, for example 4.2.2-stable
+  project-path:
+    required: false
+    description: Godot project path relative to repo root
+    default: "."
+  test-results-artifact-name:
+    required: false
+    description: Artifact name for uploaded test results
+    default: gdscript-test-results
+
+runs:
+  using: composite
+  steps:
+    - name: Set Godot executable path
+      shell: bash
+      run: |
+        echo "GODOT_EXE=${{ runner.temp }}/godot.exe" >> "$GITHUB_ENV"
+        echo "TEST_RESULTS_JSON=${{ runner.temp }}/test_results.json" >> "$GITHUB_ENV"
+        echo "TEST_RESULTS_MD=${{ runner.temp }}/test_results.md" >> "$GITHUB_ENV"
+        echo "TEST_RUNNER_ROOT=${{ github.action_path }}/../../../.." >> "$GITHUB_ENV"
+
+    - name: Download Godot
+      shell: bash
+      run: |
+        python "$TEST_RUNNER_ROOT/cicd/scripts/download_godot_executable.py" \
+          "${{ inputs.godot-version }}" \
+          "$GODOT_EXE"
+
+    - name: Run Tests
+      shell: bash
+      run: |
+        set +e
+        "$GODOT_EXE" \
+          --path "${{ github.workspace }}/${{ inputs.project-path }}" \
+          --headless \
+          --script "$TEST_RUNNER_ROOT/src/run_tests.gd" \
+          -- results_file_json="$TEST_RESULTS_JSON" results_file_md="$TEST_RESULTS_MD"
+        test_exit_code="$?"
+        echo "TEST_EXIT_CODE=$test_exit_code" >> "$GITHUB_ENV"
+        exit 0
+
+    - name: Upload test results
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ inputs.test-results-artifact-name }}
+        path: |
+          ${{ env.TEST_RESULTS_JSON }}
+          ${{ env.TEST_RESULTS_MD }}
+        if-no-files-found: warn
+
+    - name: Fail if tests failed
+      shell: bash
+      run: exit "$TEST_EXIT_CODE"
