@@ -18,6 +18,7 @@ func _init(result: TestSuiteResult) -> void:
 func _setup() -> void:
 	_generate_collated_cases()
 
+
 func _generate_collated_cases() -> void:
 	_generate_all_collated_cases()
 	_passed_case_results = []

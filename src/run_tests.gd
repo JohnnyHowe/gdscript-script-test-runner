@@ -2,11 +2,15 @@ extends SceneTree
 
 const SearchCriteria := preload("./discovery/search_criteria.gd")
 const TestDiscovery := preload("./discovery/test_discovery.gd")
+
 const CliHelpers := preload("./cli_helpers/cli_helpers.gd")
+
 const TestFilter := preload("./test_filter.gd")
 const TestSuiteRunner := preload("./runner/test_suite_runner.gd")
 const TestSuite := preload("./data/tests/test_suite.gd")
-const ResultMarkdownGenerator := preload("./result_parsing/result_markdown_generator.gd")
+
+const MarkdownOutputGenerator := preload("./result_parsing/result_markdown_generator.gd")
+const ConsoleOutputGenerator := preload("./result_parsing/console_output_generator.gd")
 
 
 class Args:
@@ -23,6 +27,7 @@ class Args:
 	var results_file_json: StringName
 	var use_results_file_md: bool
 	var results_file_md: StringName
+	var print_to_console: bool
 
 
 func _initialize():
@@ -40,13 +45,18 @@ func _run():
 	var runner := TestSuiteRunner.new()
 	var results := runner.run(test_suite)
 
+	if args.print_to_console:
+		var output_generator := ConsoleOutputGenerator.new(results)
+		var output_string := output_generator.as_string()
+		print(output_string)
+
 	if args.use_results_file_json:
 		var results_dictionary := results.to_dictionary()
 		var results_json := JSON.stringify(results_dictionary, "\t")
 		CliHelpers.WriteToFile.write(args.results_file_json, results_json)
 
 	if args.use_results_file_md:
-		var results_markdown: String = ResultMarkdownGenerator.new(results).as_string()
+		var results_markdown: String = MarkdownOutputGenerator.new(results).as_string()
 		CliHelpers.WriteToFile.write(args.results_file_md, results_markdown)
 
 	var exit_code := 0 if results.passed else 1
@@ -65,6 +75,8 @@ func _parse_args() -> Args:
 
 	parsed_args.use_results_file_md = args.has("results_file_md")
 	parsed_args.results_file_md = args.get("results_file_md", "")
+
+	parsed_args.print_to_console = args.get("print_to_console", true)
 
 	return parsed_args
 
