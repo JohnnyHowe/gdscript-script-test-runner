@@ -12,6 +12,7 @@
 		"Testing"
 	],
 	"activationEvents": [
+		"workspaceContains:project.godot",
 		"onLanguage:gdscript"
 	],
 	"main": "./out/extension.js",

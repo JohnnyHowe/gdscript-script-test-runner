@@ -11,6 +11,7 @@ const runScriptPath = "addons/gdscript-script-test-runner/src/run_tests.gd";
 const runnerWorkDirPath = ".godot/gdscript_script_test_runner";
 const requestedTestsPath = `${runnerWorkDirPath}/requested_tests.json`;
 const testResultsPath = `${runnerWorkDirPath}/test_results.json`;
+const discoveryRefreshDebounceMs = 250;
 const execFileAsync = promisify(execFile);
 
 interface DiscoveryResults {
@@ -66,7 +67,32 @@ export function activate(context: vscode.ExtensionContext) {
 		}
 	);
 
-	context.subscriptions.push(controller, runProfile, refreshCommand);
+	let refreshTimer: ReturnType<typeof setTimeout> | undefined;
+	const scheduleRefresh = () => {
+		if (refreshTimer !== undefined) {
+			clearTimeout(refreshTimer);
+		}
+
+		refreshTimer = setTimeout(() => {
+			refreshTimer = undefined;
+			void discoverTests(controller);
+		}, discoveryRefreshDebounceMs);
+	};
+
+	const testFileWatcher = vscode.workspace.createFileSystemWatcher("**/*.tests.gd");
+	testFileWatcher.onDidCreate(scheduleRefresh);
+	testFileWatcher.onDidChange(scheduleRefresh);
+	testFileWatcher.onDidDelete(scheduleRefresh);
+
+	const refreshTimerDisposable = new vscode.Disposable(() => {
+		if (refreshTimer !== undefined) {
+			clearTimeout(refreshTimer);
+		}
+	});
+
+	context.subscriptions.push(controller, runProfile, refreshCommand, testFileWatcher, refreshTimerDisposable);
+
+	void discoverTests(controller);
 }
 
 export function deactivate() {}
