@@ -9,11 +9,16 @@ python addons/gdscript-script-test-runner/src/run_tests.py
 
 or with Godot directly
 ```
-godot --headless -s addons/gdscript-script-test-runner/src/run_tests.gd
+godot --headless --quit -s addons/gdscript-script-test-runner/src/run_tests.gd
+```
+
+To write structured result files:
+```
+godot --headless --quit -s addons/gdscript-script-test-runner/src/run_tests.gd -- results_file_json=res://test_results.json results_file_md=res://test_results.md
 ```
 
 # VS Code Extension
-This addon includes a local VS Code extension scaffold in `vscode-extension/`.
+This addon includes a local VS Code extension in `vscode-extension/` that discovers and runs tests from VS Code's Test Explorer.
 
 From the root of the project that contains this addon, run:
 ```
@@ -22,30 +27,44 @@ From the root of the project that contains this addon, run:
 
 Then reload VS Code with `Developer: Reload Window`.
 
-# CLI Parameters (Godot)
+# Running Discovery
+The discovery CLI writes JSON metadata for test files and test cases. This is used by the VS Code extension and can also be used by other tooling.
+
+```
+godot --headless --quit -s addons/gdscript-script-test-runner/src/discovery/discover.gd -- results_file=res://discovered_tests.json hide_results=true
+```
+
+Useful filters:
+```
+godot --headless --quit -s addons/gdscript-script-test-runner/src/discovery/discover.gd -- test_file_pattern=combat test_name_pattern=^test_ results_file=res://discovered_tests.json
+```
+
+# Test Runner CLI Parameters (Godot)
 
 | Name | Type | Default | Description |
 | - | - | - | - |
-| `test_file_pattern` | `String` | `.*` | Regex pattern for refining test file search.<br><br>For example, `test_file_pattern=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
-| `test_name_pattern` | `String` | `.*` | Regex pattern for filtering test methods. Same usage as `test_file_pattern`.
-| `hide_passed_tests` | `bool` | `false` | Hide passed tests in the output.
-| `hide_results` | `bool` | `false` | Do not print the test log to stdout.
-| `results_file` | `String` | NA | File to write the output log to. Does not write if no path given.
-| `fail_fast` | `bool` | `false` | Stop execution as soon as the first failed test is encountered.
+| `test_suite_file` | `String` | NA | JSON test suite file to run instead of discovering tests.
+| `results_file_json` | `String` | NA | File to write JSON test results to. Does not write if no path is given.
+| `results_file_md` | `String` | NA | File to write Markdown test results to. Does not write if no path is given.
 
 ## CLI Parameters (Python)
 
 **NOTE: The python wrapper requires `godot` to be on your PATH.**
 
+The Python wrapper is a convenience entry point for running the suite from a chosen project root. Use the Godot CLIs directly for structured JSON/Markdown output or discovery JSON.
+
 | Name | Type | Default | Description |
 | - | - | - | - |
 | `--project-root` | `String` | CWD | Path to the Godot project root.
-| `--test-file-pattern` | `String` | `.*` | Regex for test file paths.
-| `--test-name-pattern` | `String` | `.*` | Regex for test method names.
-| `--hide-passed-tests` | `bool` | `false` | Hide passed tests in the output.
-| `--hide-results` | `bool` | `false` | Do not print the test log to stdout.
-| `--results-file` | `String` | NA | Write the log to a file.
-| `--fail-fast` | `bool` | `false` | Stop execution as soon as the first failed test is encountered.
+
+# Discovery CLI Parameters (Godot)
+
+| Name | Type | Default | Description |
+| - | - | - | - |
+| `test_file_pattern` | `String` | `.*` | Regex pattern for refining test file search.<br><br>For example, `test_file_pattern=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
+| `test_name_pattern` | `String` | `.*` | Regex pattern for filtering test methods. Same usage as `test_file_pattern`.
+| `results_file` | `String` | NA | File to write discovery JSON to. Does not write if no path is given.
+| `hide_results` | `bool` | `false` | Do not print discovery JSON to stdout.
 
 # Making Tests
 All tests must be in files ending with `.tests.gd`
