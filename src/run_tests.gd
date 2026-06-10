@@ -78,6 +78,9 @@ func _parse_args() -> Args:
 
 	parsed_args.print_to_console = args.get("print_to_console", true)
 
+	parsed_args.test_file_pattern = args.get("test_file_pattern", ".*")
+	parsed_args.test_method_pattern = args.get("test_method_pattern", ".*")
+
 	return parsed_args
 
 
