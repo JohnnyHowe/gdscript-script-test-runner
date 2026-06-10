@@ -346,8 +346,8 @@ async function runGodotTests(
 				runScriptPath,
 				"--",
 				`test_suite_file=res://${requestedTestsPath}`,
-				`results_file=res://${testResultsPath}`,
-				"hide_results=true"
+				`results_file_json=res://${testResultsPath}`,
+				"print_to_console=false"
 			],
 			{ cwd: projectRoot.fsPath },
 			(error: ExecFileException | null) => {
