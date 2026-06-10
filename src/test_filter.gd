@@ -1,3 +1,7 @@
+static var DEFAULT_IGNORE_PATTERNS : Array[String] = [
+	get_path_ignore_pattern("res://.godot")
+]
+
 var file_filter_pattern: String:
 	get: return _file_filter_pattern
 
@@ -11,14 +15,14 @@ var _file_filter_pattern: String
 var _method_filter_pattern: String
 var _file_filter = RegEx.new()
 var _method_filter = RegEx.new()
-var _ignored_patterns: Array[String]
+var _ignored_patterns: Array[String] = DEFAULT_IGNORE_PATTERNS
 var _ignored_regex: RegEx
 
 
 func _init(
 	file_filter_pattern := ".*",
 	method_filter_pattern := ".*",
-	ignored_patterns_value: Array[String] = []
+	ignored_patterns_value: Array[String] = DEFAULT_IGNORE_PATTERNS
 ) -> void:
 	_file_filter_pattern = file_filter_pattern
 	_method_filter_pattern = method_filter_pattern
