@@ -6,6 +6,7 @@ const _NO_REASON_GIVEN := "No reason given"
 var passed: bool
 var message: String
 var test_case: TestCase
+var logs: String = ""
 
 
 @warning_ignore("SHADOWED_VARIABLE")
@@ -38,6 +39,8 @@ func to_dictionary() -> Dictionary:
 	}
 	if not passed:
 		d["message"] = message
+	if not logs.is_empty():
+		d["logs"] = logs
 	return d
 
 
@@ -48,6 +51,7 @@ static func from_dictionary(dictionary: Dictionary) -> TestCaseResult:
 	test_case.file_path = StringName(id_parts[0])
 	test_case.method_name = StringName(id_parts[1] if id_parts.size() > 1 else "")
 	result.test_case = test_case
+	result.logs = dictionary.get("logs", "")
 	return result
 
 # =================================================================================================

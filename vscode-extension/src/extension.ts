@@ -42,6 +42,7 @@ interface RunResultCase {
 	id: string;
 	status: "passed" | "failed";
 	message?: string;
+	logs?: string;
 }
 
 export function activate(context: vscode.ExtensionContext) {
@@ -412,6 +413,10 @@ function reportRunResults(
 			}
 
 			reportedIds.add(item.id);
+			if (typeof testCase.logs === "string" && testCase.logs.length > 0) {
+				run.appendOutput(normalizeTestOutput(testCase.logs), undefined, item);
+			}
+
 			if (testCase.status === "passed") {
 				run.passed(item);
 			} else {
@@ -458,4 +463,8 @@ function resPathToUri(projectRoot: vscode.Uri, resourcePath: string): vscode.Uri
 function createLineRange(oneBasedLine: number): vscode.Range {
 	const line = Math.max(oneBasedLine - 1, 0);
 	return new vscode.Range(line, 0, line, Number.MAX_SAFE_INTEGER);
+}
+
+function normalizeTestOutput(output: string): string {
+	return output.replace(/\r?\n/g, "\r\n");
 }
