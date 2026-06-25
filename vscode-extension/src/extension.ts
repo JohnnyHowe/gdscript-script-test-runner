@@ -420,7 +420,7 @@ function reportRunResults(
 			if (testCase.status === "passed") {
 				run.passed(item);
 			} else {
-				run.failed(item, new vscode.TestMessage(testCase.message ?? "Test failed."));
+				run.failed(item, new vscode.TestMessage(formatFailureMessage(testCase)));
 			}
 		}
 	}
@@ -467,4 +467,13 @@ function createLineRange(oneBasedLine: number): vscode.Range {
 
 function normalizeTestOutput(output: string): string {
 	return output.replace(/\r?\n/g, "\r\n");
+}
+
+function formatFailureMessage(testCase: RunResultCase): string {
+	const message = testCase.message ?? "Test failed.";
+	if (typeof testCase.logs !== "string" || testCase.logs.length === 0) {
+		return message;
+	}
+
+	return `${message}\n\nLogs:\n${testCase.logs}`;
 }
