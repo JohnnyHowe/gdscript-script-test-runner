@@ -165,6 +165,7 @@ func _create_search_filter(args: Args) -> SearchCriteria.TestFilter:
 
 
 func _quit(exit_code: int):
+	print("Quitting...")
 	for child in root.get_children():
 		child.free()
 	quit(exit_code)
