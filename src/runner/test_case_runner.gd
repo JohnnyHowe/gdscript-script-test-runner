@@ -6,13 +6,23 @@ const TestResultStandardizer := preload("./test_result_standardizer.gd")
 
 static func run(test_case: TestCase, file_instance: Object, log_capture = null) -> TestCaseResult:
 	var method_name := String(test_case.method_name)
+
 	if log_capture != null:
 		log_capture.begin_test()
+
 	var raw_result = file_instance.call(method_name)
+
 	var logs := ""
 	if log_capture != null:
 		logs = log_capture.end_test()
+
 	var compiled_result := TestResultStandardizer.standardize(raw_result)
+
+	for line in logs.split("\n"):
+		if line.begins_with("SCRIPT ERROR: "):
+			compiled_result.passed = false
+			compiled_result.message = "Script error"
+
 	compiled_result.test_case = test_case
 	compiled_result.logs = logs
 	return compiled_result
