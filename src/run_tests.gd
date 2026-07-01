@@ -102,7 +102,7 @@ func _run():
 
 	var runner := TestSuiteRunner.new()
 	var log_capture := LogCapture.new()
-	var results := runner.run(test_suite, log_capture)
+	var results := await runner.run(test_suite, log_capture)
 
 	if args.print_to_console:
 		var output_generator := ConsoleOutputGenerator.new(results)

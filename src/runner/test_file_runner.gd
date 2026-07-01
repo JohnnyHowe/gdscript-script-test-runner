@@ -10,6 +10,6 @@ static func run(test_file: TestFile, script: GDScript, log_capture = null) -> Ar
 	var file_instance := script.new()
 
 	for test_case: TestCase in test_file.cases:
-		var result := TestCaseRunner.run(test_case, file_instance, log_capture)
+		var result := await TestCaseRunner.run(test_case, file_instance, log_capture)
 		results.append(result)
 	return results

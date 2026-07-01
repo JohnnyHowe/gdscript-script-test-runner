@@ -8,7 +8,10 @@ static func run(test_case: TestCase, file_instance: Object, log_capture = null) 
 	var method_name := String(test_case.method_name)
 	if log_capture != null:
 		log_capture.begin_test()
-	var raw_result = file_instance.call(method_name)
+
+	var callable := Callable(file_instance, method_name)
+	var raw_result = await callable.call()
+
 	var logs := ""
 	if log_capture != null:
 		logs = log_capture.end_test()
