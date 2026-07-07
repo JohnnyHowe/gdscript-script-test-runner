@@ -87,13 +87,33 @@ class Args:
 	var results_file_md: StringName
 	var print_to_console: bool
 
+	func to_dict() -> Dictionary:
+		var result := {}
 
-func _initialize():
+		for property in get_property_list():
+			if property.usage & PROPERTY_USAGE_SCRIPT_VARIABLE:
+				result[property.name] = get(property.name)
+
+		return result
+	
+
+var _has_run := false
+
+
+func _process(_delta: float) -> bool:
+	if _has_run:
+		return true
+
+	_has_run = true
 	_run()
+	return true
 
 
 func _run():
 	var args := _parse_args()
+
+	print("=".repeat(64))
+	print("Got args:\n" + JSON.stringify(args.to_dict(), "\t"))
 
 	var test_suite := _get_test_suite(args)
 	if test_suite == null:
@@ -102,7 +122,9 @@ func _run():
 
 	var runner := TestSuiteRunner.new()
 	var log_capture := LogCapture.new()
-	var results := runner.run(test_suite, log_capture)
+	print("=".repeat(64))
+
+	var results := runner.run(test_suite, root, log_capture)
 
 	if args.print_to_console:
 		var output_generator := ConsoleOutputGenerator.new(results)
@@ -145,9 +167,11 @@ func _parse_args() -> Args:
 
 func _get_test_suite(args: Args) -> TestSuite:
 	if args.use_test_suite_file:
+		print("\nUsing custom test suite: \"%s\"" % [args.test_suite_file])
 		return CliHelpers.load_test_suite(args.test_suite_file)
 
 	var search_criteria := _create_search_criteria(args)
+	print("\nUsing search critera:\n%s" % [search_criteria.to_string_custom()])
 	return TestDiscovery.new(search_criteria).discover()
 
 
