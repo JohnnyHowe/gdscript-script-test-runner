@@ -53,6 +53,19 @@ func should_ignore_method(method_name: String) -> bool:
 
 
 func _to_string() -> String:
+	return to_string_custom(false)
+
+
+func to_string_custom(newlines := true) -> String:
+	if newlines:
+		return "\n".join([
+			"TestFilter(",
+			"\tfiles=%s," % _file_filter_pattern,
+			"\tmethods=%s," % _method_filter_pattern,
+			"\tignore=%s" % _ignored_patterns,
+			")"
+		])
+
 	return "TestFilter(files=%s, methods=%s, ignore=%s)" % [
 		_file_filter_pattern,
 		_method_filter_pattern,

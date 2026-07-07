@@ -36,3 +36,30 @@ static func from_cli_args(args: Dictionary):
 		".tests.gd",
 		"test_"
 	)
+
+
+func _to_string() -> String:
+	return to_string_custom(false)
+
+
+func to_string_custom(newlines := true) -> String:
+	if newlines:
+		var filter_str_raw := filter.to_string_custom()
+		var filter_str_lines := Array(filter_str_raw.split("\n"))
+		var filter_str := "\n\t".join(filter_str_lines)
+
+		return "\n".join([
+			"SearchCriteria(",
+			"\troot=%s," % search_root,
+			"\tfile_suffix=%s," % test_file_name_suffix,
+			"\tfunction_prefix=%s," % test_function_name_prefix,
+			"\tfilter=%s" % filter_str,
+			")"
+		])
+
+	return "SearchCriteria(root=%s, file_suffix=%s, function_prefix=%s, filter=%s)" % [
+		search_root,
+		test_file_name_suffix,
+		test_function_name_prefix,
+		filter
+	]
