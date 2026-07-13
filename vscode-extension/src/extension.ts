@@ -12,6 +12,8 @@ const runnerWorkDirPath = ".godot/gdscript_script_test_runner";
 const requestedTestsPath = `${runnerWorkDirPath}/requested_tests.json`;
 const testResultsPath = `${runnerWorkDirPath}/test_results.json`;
 const discoveryRefreshDebounceMs = 250;
+const configurationSection = "gdscriptScriptTestRunner";
+const projectPathSetting = "projectPath";
 const execFileAsync = promisify(execFile);
 
 interface DiscoveryResults {
@@ -90,8 +92,20 @@ export function activate(context: vscode.ExtensionContext) {
 			clearTimeout(refreshTimer);
 		}
 	});
+	const configurationListener = vscode.workspace.onDidChangeConfiguration((event) => {
+		if (event.affectsConfiguration(`${configurationSection}.${projectPathSetting}`)) {
+			void discoverTests(controller);
+		}
+	});
 
-	context.subscriptions.push(controller, runProfile, refreshCommand, testFileWatcher, refreshTimerDisposable);
+	context.subscriptions.push(
+		controller,
+		runProfile,
+		refreshCommand,
+		testFileWatcher,
+		refreshTimerDisposable,
+		configurationListener
+	);
 
 	void discoverTests(controller);
 }
@@ -103,7 +117,6 @@ async function discoverTests(controller: vscode.TestController): Promise<void> {
 
 	const projectRoot = await findGodotProjectRoot();
 	if (projectRoot === undefined) {
-		vscode.window.showWarningMessage("Could not find a Godot project.godot file in the workspace.");
 		return;
 	}
 
@@ -126,6 +139,8 @@ async function runDiscovery(projectRoot: vscode.Uri): Promise<boolean> {
 		await execFileAsync(
 			"godot",
 			[
+				"--path",
+				projectRoot.fsPath,
 				"--headless",
 				"--quit",
 				"-s",
@@ -189,17 +204,56 @@ async function runTests(
 }
 
 async function findGodotProjectRoot(): Promise<vscode.Uri | undefined> {
+	const validProjectRoots: vscode.Uri[] = [];
+	const invalidProjectRoots: vscode.Uri[] = [];
+
 	for (const workspaceFolder of vscode.workspace.workspaceFolders ?? []) {
-		const projectFile = vscode.Uri.joinPath(workspaceFolder.uri, "project.godot");
+		const projectRoot = resolveConfiguredProjectRoot(workspaceFolder);
+		const projectFile = vscode.Uri.joinPath(projectRoot, "project.godot");
 		try {
 			await vscode.workspace.fs.stat(projectFile);
-			return workspaceFolder.uri;
+			validProjectRoots.push(projectRoot);
 		} catch {
-			// Keep searching other workspace folders.
+			invalidProjectRoots.push(projectRoot);
 		}
 	}
 
+	if (validProjectRoots.length === 1) {
+		return validProjectRoots[0];
+	}
+
+	if (validProjectRoots.length > 1) {
+		vscode.window.showWarningMessage(
+			`Multiple Godot projects are configured. This version supports one project at a time: ${validProjectRoots.map(formatUriForMessage).join(", ")}`
+		);
+		return undefined;
+	}
+
+	if (invalidProjectRoots.length > 0) {
+		vscode.window.showWarningMessage(
+			`No project.godot was found in the configured project path: ${invalidProjectRoots.map(formatUriForMessage).join(", ")}. Set ${configurationSection}.${projectPathSetting} to the Godot project root.`
+		);
+	}
+
 	return undefined;
+}
+
+function resolveConfiguredProjectRoot(workspaceFolder: vscode.WorkspaceFolder): vscode.Uri {
+	const configuration = vscode.workspace.getConfiguration(configurationSection, workspaceFolder.uri);
+	const configuredPath = configuration.get<string>(projectPathSetting, "").trim();
+	if (configuredPath.length === 0) {
+		return workspaceFolder.uri;
+	}
+
+	if (path.isAbsolute(configuredPath)) {
+		return vscode.Uri.file(configuredPath);
+	}
+
+	return vscode.Uri.joinPath(workspaceFolder.uri, configuredPath);
+}
+
+function formatUriForMessage(uri: vscode.Uri): string {
+	return uri.scheme === "file" ? uri.fsPath : uri.toString();
 }
 
 async function loadDiscoveryResults(projectRoot: vscode.Uri): Promise<DiscoveryResults | undefined> {
@@ -367,6 +421,8 @@ async function runGodotTests(
 		const child = execFile(
 			"godot",
 			[
+				"--path",
+				projectRoot.fsPath,
 				"--headless",
 				"--quit",
 				"-s",

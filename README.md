@@ -31,11 +31,17 @@ This addon includes a local VS Code extension in `vscode-extension/` that discov
 
 ### Installing
 
-TODO
+In VSCode, run `Extensions: Install from VSIX...` and select `vscode-extension/gdscript-script-test-runner-vscode.vsix`.
 
 ### Rebuilding
 
-TODO
+From the `vscode-extension` directory, run
+
+```bash
+npm install
+npm run compile
+npm run package
+```
 
 ## Making Tests
 

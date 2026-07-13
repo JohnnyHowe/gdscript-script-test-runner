@@ -13,10 +13,22 @@
 	],
 	"activationEvents": [
 		"workspaceContains:project.godot",
-		"onLanguage:gdscript"
+		"onLanguage:gdscript",
+		"onStartupFinished"
 	],
 	"main": "./out/extension.js",
 	"contributes": {
+		"configuration": {
+			"title": "GDScript Script Test Runner",
+			"properties": {
+				"gdscriptScriptTestRunner.projectPath": {
+					"type": "string",
+					"default": "",
+					"scope": "resource",
+					"description": "Path to the Godot project root, relative to the workspace folder or absolute. An empty value uses the workspace folder."
+				}
+			}
+		},
 		"commands": [
 			{
 				"command": "gdscriptScriptTestRunner.refreshTests",
