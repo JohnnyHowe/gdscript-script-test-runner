@@ -1,33 +1,65 @@
-# Scope
+# GDScript Test Runner
+
 Can test any plain objects.
 
-# Running Tests
-With python wrapper (preferred - Godot is a bit weird in some consoles)
-```
+## Usage: CLI
+
+### Python
+
+Since Godot console output seems to behave strangely (sometimes other things can't see any output), there's a small python wrapper.
+
+```bash
 python addons/gdscript-script-test-runner/src/run_tests.py
 ```
 
-or with Godot directly
-```
+### Godot
+
+```bash
 godot --headless --quit -s addons/gdscript-script-test-runner/src/run_tests.gd
 ```
 
-To write structured result files:
-```
-godot --headless --quit -s addons/gdscript-script-test-runner/src/run_tests.gd -- results_file_json=res://test_results.json results_file_md=res://test_results.md
-```
+### Parameters
 
-# VS Code Extension
+| Name (Godot) | Name (Python) | Type | Default | Description |
+| - | - | - | - | - |
+
+TODO
+
+## VS Code Extension
+
 This addon includes a local VS Code extension in `vscode-extension/` that discovers and runs tests from VS Code's Test Explorer.
 
-From the root of the project that contains this addon, run:
-```
-.\godot\addons\gdscript-script-test-runner\install_vscode_extension.bat
+### Installing
+
+TODO
+
+### Rebuilding
+
+TODO
+
+## Making Tests
+
+All tests must be in files ending with `.tests.gd`
+
+## Unit Tests
+
+Any function starting with `test_` is considered a test.
+
+For example
+
+```gdscript
+func test_always_fail() -> TestCaseResult:
+    return TestCaseResult.fail()
 ```
 
-Then reload VS Code with `Developer: Reload Window`.
+### Asserting and Return Values
 
-# Running Discovery
+TODO
+
+## REDO THE FOLLOWING!!
+
+### Running Discovery
+
 The discovery CLI writes JSON metadata for test files and test cases. This is used by the VS Code extension and can also be used by other tooling.
 
 ```
@@ -35,11 +67,12 @@ godot --headless --quit -s addons/gdscript-script-test-runner/src/discovery/disc
 ```
 
 Useful filters:
+
 ```
 godot --headless --quit -s addons/gdscript-script-test-runner/src/discovery/discover.gd -- test_file_pattern=combat test_name_pattern=^test_ results_file=res://discovered_tests.json
 ```
 
-# Test Runner CLI Parameters (Godot)
+### Test Runner CLI Parameters (Godot)
 
 | Name | Type | Default | Description |
 | - | - | - | - |
@@ -47,7 +80,7 @@ godot --headless --quit -s addons/gdscript-script-test-runner/src/discovery/disc
 | `results_file_json` | `String` | NA | File to write JSON test results to. Does not write if no path is given.
 | `results_file_md` | `String` | NA | File to write Markdown test results to. Does not write if no path is given.
 
-## CLI Parameters (Python)
+#### CLI Parameters (Python)
 
 **NOTE: The python wrapper requires `godot` to be on your PATH.**
 
@@ -57,44 +90,11 @@ The Python wrapper is a convenience entry point for running the suite from a cho
 | - | - | - | - |
 | `--project-root` | `String` | CWD | Path to the Godot project root.
 
-# Discovery CLI Parameters (Godot)
+### Discovery CLI Parameters (Godot)
 
 | Name | Type | Default | Description |
 | - | - | - | - |
-| `test_file_pattern` | `String` | `.*` | Regex pattern for refining test file search.<br><br>For example, `test_file_pattern=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project.
-| `test_name_pattern` | `String` | `.*` | Regex pattern for filtering test methods. Same usage as `test_file_pattern`.
-| `results_file` | `String` | NA | File to write discovery JSON to. Does not write if no path is given.
-| `hide_results` | `bool` | `false` | Do not print discovery JSON to stdout.
-
-# Making Tests
-All tests must be in files ending with `.tests.gd`
-
-## Unit Tests
-```gdscript
-func test_<name>() -> TestCaseResult | Array[TestCaseResult]
-```
-
-For example
-
-```gdscript
-func test_condition() -> TestCaseResult:
-	...
-	return TestCaseResult.new(condition)
-```
-
-## Unit Test Generator
-To programmatically create unit tests
-
-```gdscript
-func <name>_test_generator() -> Dictionary[String, Callable]
-```
-
-For example (this is not a good test, but a syntactically valid generator)
-
-```gdscript
-func my_method_test_generator() -> Dictionary[String, Callable]:
-	var tests = {}
-	for item_name in ["item1", "item2", "item3"]:
-		tests["test_my_test_method_with" + item_name] = func(): return my_test_method(i)
-	return tests
-```
+| `test_file_pattern` | `String` | `.*` | Regex pattern for refining test file search.<br><br>For example, `test_file_pattern=.*my_script.tests.gd` will match any file named `my_script.tests.gd` in the project. |
+| `test_name_pattern` | `String` | `.*` | Regex pattern for filtering test methods. Same usage as `test_file_pattern`. |
+| `results_file` | `String` | NA | File to write discovery JSON to. Does not write if no path is given. |
+| `hide_results` | `bool` | `false` | Do not print discovery JSON to stdout. |
