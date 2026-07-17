@@ -1,4 +1,4 @@
-const TestFilter := preload("res://addons/gdscript-script-test-runner/src/test_filter.gd")
+const TestFilter := preload("../../src/test_filter.gd")
 
 
 func test_get_path_ignore_pattern_matches_folder_paths() -> Array[TestCaseResult]:
