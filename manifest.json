@@ -1,0 +1,17 @@
+{
+	"name": "gdscript-script-test-runner",
+	"dependencies": {
+		"array_utility": {
+			"url": null,
+			"revision": null
+		},
+		"jons_godot_utilities_to_sort": {
+			"url": null,
+			"revision": null
+		},
+		"user_argument_parser": {
+			"url": null,
+			"revision": null
+		}
+	}
+}
