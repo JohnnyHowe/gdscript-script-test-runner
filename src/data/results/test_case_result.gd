@@ -95,9 +95,9 @@ static func contains_same_items(expected: Array, real: Array, equals_override :=
 
 	test_results.append(TestCaseResult.new(expected.size() == real.size(), "Expected array of size %s, got %s" % [expected.size(), real.size()]))
 
-	for expected_item in ArrayUtility.ArraySetOperations.difference(expected, real, equals_override):
+	for expected_item in _difference(expected, real, equals_override):
 		test_results.append(TestCaseResult.fail("Expected to find %s" % _get_item_str(expected_item)))
-	for real_item in ArrayUtility.ArraySetOperations.difference(real, expected, equals_override):
+	for real_item in _difference(real, expected, equals_override):
 		test_results.append(TestCaseResult.fail("Didn't expect to find %s" % _get_item_str(real_item)))
 
 	return test_results
@@ -109,6 +109,14 @@ static func exists(obj: Variant, error_message := "Object reference invalid!") -
 # =================================================================================================
 # region ???
 # =================================================================================================
+
+static func _difference(source: Array, to_remove: Array, equals_override: Callable) -> Array:
+	var result := []
+	for source_item in source:
+		if not to_remove.any(func(item): return equals_override.call(source_item, item)):
+			result.append(source_item)
+	return result
+
 
 static func _get_item_str(item: Variant) -> String:
 	if item is String:
