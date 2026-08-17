@@ -1,10 +1,11 @@
 ## Runs one discovered test case.
 const TestSuite := preload("../data/tests/test_suite.gd")
 const TestCase := TestSuite.TestCase
+const LogCapture := preload("./log_capture.gd")
 const TestResultStandardizer := preload("./test_result_standardizer.gd")
 
 
-static func run(test_case: TestCase, file_instance: Object, log_capture = null) -> TestCaseResult:
+static func run(test_case: TestCase, file_instance: Object, log_capture: LogCapture = null) -> TestCaseResult:
 	var method_name := String(test_case.method_name)
 
 	if log_capture != null:

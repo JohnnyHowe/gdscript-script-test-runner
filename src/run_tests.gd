@@ -6,69 +6,12 @@ const TestDiscovery := preload("./discovery/test_discovery.gd")
 const CliHelpers := preload("./cli_helpers/cli_helpers.gd")
 
 const TestFilter := preload("./test_filter.gd")
+const LogCapture := preload("./runner/log_capture.gd")
 const TestSuiteRunner := preload("./runner/test_suite_runner.gd")
 const TestSuite := preload("./data/tests/test_suite.gd")
 
 const MarkdownOutputGenerator := preload("./result_parsing/result_markdown_generator.gd")
 const ConsoleOutputGenerator := preload("./result_parsing/console_output_generator.gd")
-
-
-class LogCapture:
-	var enabled := false
-	var log_path := ""
-	var start_position := 0
-
-
-	func _init() -> void:
-		var file_logging_enabled := ProjectSettings.get_setting("debug/file_logging/enable_file_logging", true)
-		if not file_logging_enabled:
-			return
-
-		var configured_path := String(ProjectSettings.get_setting("debug/file_logging/log_path", "user://logs/godot.log"))
-		log_path = ProjectSettings.globalize_path(configured_path)
-		enabled = FileAccess.file_exists(log_path)
-		if enabled:
-			start_position = _get_log_content_length()
-
-
-	func begin_test() -> void:
-		if not enabled:
-			return
-
-		start_position = _get_log_content_length()
-
-
-	func end_test() -> String:
-		if not enabled:
-			return ""
-
-		var length := _get_log_content_length()
-		if start_position >= length:
-			return ""
-
-		var file := FileAccess.open(log_path, FileAccess.READ)
-		if file == null:
-			enabled = false
-			return ""
-
-		file.seek(start_position)
-		var logs := file.get_buffer(length - start_position).get_string_from_utf8()
-		start_position = length
-		return logs
-
-
-	func _get_log_content_length() -> int:
-		var file := FileAccess.open(log_path, FileAccess.READ)
-		if file == null:
-			enabled = false
-			return 0
-
-		var contents := file.get_buffer(file.get_length())
-		for i in contents.size():
-			if contents[i] == 0:
-				return i
-
-		return contents.size()
 
 
 class Args:

@@ -3,9 +3,10 @@ const TestSuite := preload("../data/tests/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const TestCase := TestSuite.TestCase
 const TestCaseRunner := preload("./test_case_runner.gd")
+const LogCapture := preload("./log_capture.gd")
 
 
-static func run(test_file: TestFile, script: GDScript, log_capture = null) -> Array[TestCaseResult]:
+static func run(test_file: TestFile, script: GDScript, log_capture: LogCapture = null) -> Array[TestCaseResult]:
 	var results: Array[TestCaseResult] = []
 	var file_instance := script.new()
 

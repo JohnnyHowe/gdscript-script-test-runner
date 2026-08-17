@@ -2,10 +2,12 @@
 const TestSuite := preload("../data/tests/test_suite.gd")
 const TestFile := TestSuite.TestFile
 const TestFileRunner := preload("./test_file_runner.gd")
+const LogCapture := preload("./log_capture.gd")
 const TestFileResult := preload("../data/results/test_file_result.gd")
 const TestSuiteResult := preload("../data/results/test_suite_result.gd")
 
-func run(test_suite: TestSuite, log_capture = null) -> TestSuiteResult:
+
+func run(test_suite: TestSuite, log_capture: LogCapture = null) -> TestSuiteResult:
 	var file_results: Array[TestFileResult] = []
 	for test_file: TestFile in test_suite.files:
 		var script: GDScript = load(String(test_file.file_path))
